@@ -1,0 +1,120 @@
+<script setup lang="ts">
+import RatingRepository from "~/repos/RatingRepository";
+import type Film from "~/resources/Film";
+import type Rating from "~/resources/Rating";
+import UserRepository from "~/repos/UserRepository";
+
+const repo = new RatingRepository();
+
+const film = defineModel<Film>();
+
+const ratings = ref<Rating[]>([]);
+
+watch(film, async (value) => {
+    if (!value)
+        return;
+
+    ratings.value = (await repo.index(film.value.id)).data ?? [];
+});
+
+async function refresh() {
+    if (!film.value)
+        return;
+
+    ratings.value = (await repo.index(film.value.id)).data ?? [];
+}
+
+function makeRating(): Rating {
+    return {
+        id  : 0,
+        user: null,
+        data: {
+            comment: ''
+        }
+    };
+}
+
+async function save(data: Rating) {
+    if (!film.value)
+        return;
+
+    if (data.id === 0)
+        await repo.store(film.value.id, data);
+    else
+        await repo.update(film.value.id, data);
+
+    await refresh();
+}
+
+async function remove(data: Rating) {
+    if (!film.value)
+        return;
+
+    await repo.destroy(film.value.id, data.id);
+    await refresh();
+}
+</script>
+
+<template>
+    <UModal :model-value="!!film" @update:model-value="value => !value ? (film = undefined) : ''">
+        <UCard :ui="{ring: ''}">
+            <template #header>
+                <div class="flex flex-row">
+                    <h3 class="font-semibold text-lg basis-full">Рейтинги</h3>
+
+                    <UButton icon="i-heroicons-x-mark" color="gray" variant="link"
+                             square size="xl" :padded="false" @click="film = undefined"/>
+                </div>
+            </template>
+
+            <UButton color="gray"
+                     icon="i-heroicons-plus"
+                     @click="ratings.unshift(makeRating())">
+                Добавить
+            </UButton>
+
+            <div class="flex flex-col gap-5 mt-5">
+                <UCard v-for="rating in ratings"
+                       :key="rating.id"
+                       :ui="{header: {padding: 'sm:px-3 sm:py-2.5'}, body: {padding: 'sm:px-3 sm:py-3'}, footer: {padding: 'sm:px-3 sm:py-2.5'}}">
+                    <template #header>
+                        <h5 class="text-sm font-semibold">{{ rating.id > 0 ? `Рейтинг #${rating.id}` : 'Новый рейтинг' }}</h5>
+                    </template>
+
+                    <div class="flex flex-col gap-2.5">
+                        <UFormGroup label="Пользователь">
+                            <UiRepoSearchSelect :repo="new UserRepository()"
+                                                placeholder="Выберите пользователя из списка"
+                                                v-model="rating.user"/>
+                        </UFormGroup>
+
+                        <UFormGroup label="Комментарий">
+                            <UInput v-model="rating.data.comment"/>
+                        </UFormGroup>
+                    </div>
+
+                    <template #footer>
+                        <div class="flex items-center justify-end gap-2.5">
+                            <UButton icon="i-heroicons-check"
+                                     size="xs"
+                                     @click="save(rating)">
+                                Сохранить
+                            </UButton>
+
+                            <UButton color="red"
+                                     icon="i-heroicons-trash"
+                                     size="xs"
+                                     @click="remove(rating)">
+                                Удалить
+                            </UButton>
+                        </div>
+                    </template>
+                </UCard>
+            </div>
+        </UCard>
+    </UModal>
+</template>
+
+<style scoped>
+
+</style>
