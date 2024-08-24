@@ -8,8 +8,8 @@ export default defineNuxtConfig({
 
     runtimeConfig: {
         public: {
-            apiUrl    : 'http://myfilms.test/api',
-            storageUrl: 'http://myfilms.test/storage'
+            apiUrl    : process.env.NUXT_API_URL,
+            storageUrl: process.env.NUXT_STORAGE_URL
         }
     }
 })
