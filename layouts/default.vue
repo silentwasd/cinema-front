@@ -19,15 +19,19 @@ const nav = [{
 </script>
 
 <template>
-    <div class="container mx-auto py-10">
+    <UContainer class="py-2.5">
         <Head>
             <title>MyFilms</title>
         </Head>
 
         <div class="flex flex-col gap-2.5">
-            <UHorizontalNavigation :links="nav"/>
+            <div>
+                <UHorizontalNavigation :links="nav"/>
+
+                <UDivider/>
+            </div>
 
             <NuxtPage/>
         </div>
-    </div>
+    </UContainer>
 </template>

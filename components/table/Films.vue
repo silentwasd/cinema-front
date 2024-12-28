@@ -4,7 +4,7 @@ import FilmRepository from "~/repos/FilmRepository";
 import ListRepository from "~/repos/ListRepository";
 import UserRepository from "~/repos/UserRepository";
 import type User from "~/resources/User";
-import RatingRepository from "~/repos/RatingRepository";
+import {FilmFormat} from "~/types/enums/FilmFormat";
 
 const props = defineProps<{
     cacheKey: string,
@@ -42,6 +42,11 @@ let columns = [
         key     : 'name',
         label   : 'Наименование',
         sortable: true,
+    },
+    {
+        key     : 'format',
+        label   : 'Формат',
+        sortable: true
     },
     {
         key     : 'release_date',
@@ -126,8 +131,9 @@ watch(ratingRow, () => refresh());
 
 function makeResource(): Film {
     return {
-        id  : 0,
-        name: ''
+        id    : 0,
+        name  : '',
+        format: FilmFormat.Film
     };
 }
 
@@ -218,6 +224,10 @@ const listMany = ref<boolean>(false);
                 </div>
             </template>
 
+            <template #format-data="{row}">
+                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
+            </template>
+
             <template #actions-data="{row}">
                 <div class="flex gap-2.5 justify-end">
                     <UTooltip text="Изменить">
@@ -294,7 +304,7 @@ const listMany = ref<boolean>(false);
                             {{
                                 Array.isArray(state.users) && state.users.length >
                                 0 ? state.users.map((user: User) => user.name)
-                                         .join(', ') : 'Выберите пользователей из списка'
+                                    .join(', ') : 'Выберите пользователей из списка'
                             }}
                         </template>
                     </UiRepoSearchSelect>
@@ -321,7 +331,7 @@ const listMany = ref<boolean>(false);
                             {{
                                 Array.isArray(state.users) && state.users.length >
                                 0 ? state.users.map((user: User) => user.name)
-                                         .join(', ') : 'Выберите пользователей из списка'
+                                    .join(', ') : 'Выберите пользователей из списка'
                             }}
                         </template>
                     </UiRepoSearchSelect>
