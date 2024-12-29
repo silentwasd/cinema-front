@@ -240,11 +240,20 @@ const filmWatcherRepo = new FilmWatcherRepository();
                                  @click="editRow = row"/>
                     </UTooltip>
 
-                    <UTooltip text="В мои фильмы">
+                    <UTooltip v-if="!row.is_mine"
+                              text="В мои фильмы">
                         <UButton color="gray"
                                  icon="i-heroicons-arrow-right"
                                  square
                                  @click="addRow = row"/>
+                    </UTooltip>
+
+                    <UTooltip v-else
+                              text="Мой фильм">
+                        <UButton color="gray"
+                                 disabled
+                                 icon="i-heroicons-check-16-solid"
+                                 square/>
                     </UTooltip>
 
                     <UTooltip text="Удалить">

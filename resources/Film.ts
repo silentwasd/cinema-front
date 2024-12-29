@@ -9,4 +9,5 @@ export default interface Film {
     description?: string;
     ratings: number;
     lists: number;
+    is_mine?: boolean;
 }
