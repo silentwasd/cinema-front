@@ -1,8 +1,12 @@
 <script setup lang="ts">
 const nav = [{
-    label: 'Фильмы',
-    icon : 'i-heroicons-video-camera',
+    label: 'Каталог',
+    icon : 'i-heroicons-folder-open',
     to   : '/'
+}, {
+    label: 'Мои фильмы',
+    icon : 'i-heroicons-film',
+    to   : '/my-films'
 }, {
     label: 'Списки',
     icon : 'i-heroicons-list-bullet',

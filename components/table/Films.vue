@@ -5,6 +5,8 @@ import ListRepository from "~/repos/ListRepository";
 import UserRepository from "~/repos/UserRepository";
 import type User from "~/resources/User";
 import {FilmFormat} from "~/types/enums/FilmFormat";
+import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
+import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 
 const props = defineProps<{
     cacheKey: string,
@@ -52,14 +54,6 @@ let columns = [
         key     : 'release_date',
         label   : 'Дата выхода',
         sortable: true
-    },
-    {
-        key  : 'ratings',
-        label: 'Рейтингов'
-    },
-    {
-        key  : 'lists',
-        label: 'Списки'
     },
     {
         key  : 'actions',
@@ -123,7 +117,7 @@ async function removeMany() {
 
 const editRow = ref<Film>();
 
-const listRow = ref<Film>();
+const addRow = ref<Film>();
 
 const ratingRow = ref<Film>();
 
@@ -142,6 +136,15 @@ const selectedRow = ref<Film>();
 const config = useRuntimeConfig();
 
 const listMany = ref<boolean>(false);
+
+const watchStatusOptions = [
+    {label: 'Можно посмотреть', value: FilmWatchStatus.ToWatch},
+    {label: 'Нужно досмотреть', value: FilmWatchStatus.MustFinish},
+    {label: 'Просмотрено', value: FilmWatchStatus.Watched},
+    {label: 'Пропущено', value: FilmWatchStatus.Dropped},
+];
+
+const filmWatcherRepo = new FilmWatcherRepository();
 </script>
 
 <template>
@@ -237,18 +240,11 @@ const listMany = ref<boolean>(false);
                                  @click="editRow = row"/>
                     </UTooltip>
 
-                    <UTooltip text="Изменить список">
+                    <UTooltip text="В мои фильмы">
                         <UButton color="gray"
-                                 icon="i-heroicons-list-bullet"
+                                 icon="i-heroicons-arrow-right"
                                  square
-                                 @click="listRow = row"/>
-                    </UTooltip>
-
-                    <UTooltip text="Оценки">
-                        <UButton color="gray"
-                                 icon="i-heroicons-star"
-                                 square
-                                 @click="ratingRow = row"/>
+                                 @click="addRow = row"/>
                     </UTooltip>
 
                     <UTooltip text="Удалить">
@@ -282,32 +278,16 @@ const listMany = ref<boolean>(false);
             </template>
         </ModalEditModel>
 
-        <ModalEditModel v-model="listRow"
-                        :save="(state: any) => repo.updateList(state.id, state.list_id, state.users.map((user: any) => user.id)).then(() => refresh())">
+        <ModalEditModel v-model="addRow"
+                        :save="(state: any) => filmWatcherRepo.store({film_id: addRow.id, status: state.status}).then(() => refresh())">
             <template #edit-title="{state}">Фильм #{{ state.id }}</template>
 
             <template #default="{state}">
-                <UFormGroup label="Список" name="list_id">
-                    <UiRepoSearchSelectId :repo="new ListRepository()"
-                                          placeholder="Выберите подходящий список"
-                                          v-model="state.list_id"/>
-                </UFormGroup>
-
-                <UtilUpdateWhen :watch="() => state.list_id"
-                                @update="(listId: number) => repo.listUsers(listRow?.id ?? 0, listId).then(collection => state.users = collection.data)"/>
-
-                <UFormGroup v-if="state.list_id" label="Пользователи" name="users">
-                    <UiRepoSearchSelect :repo="new UserRepository()"
-                                        multiple
-                                        v-model="state.users">
-                        <template #label>
-                            {{
-                                Array.isArray(state.users) && state.users.length >
-                                0 ? state.users.map((user: User) => user.name)
-                                    .join(', ') : 'Выберите пользователей из списка'
-                            }}
-                        </template>
-                    </UiRepoSearchSelect>
+                <UFormGroup label="Статус просмотра" name="status">
+                    <USelectMenu :options="watchStatusOptions"
+                                 value-attribute="value"
+                                 placeholder="Выберите подходящий список"
+                                 v-model="state.status"/>
                 </UFormGroup>
             </template>
         </ModalEditModel>
