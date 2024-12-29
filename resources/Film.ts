@@ -9,4 +9,5 @@ export default interface Film {
     description?: string;
     is_mine?: boolean;
     has_rating?: boolean;
+    can_edit?: boolean;
 }

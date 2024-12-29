@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type Film from "~/resources/Film";
 import FilmRepository from "~/repos/FilmRepository";
-import ListRepository from "~/repos/ListRepository";
-import UserRepository from "~/repos/UserRepository";
-import type User from "~/resources/User";
 import {FilmFormat} from "~/types/enums/FilmFormat";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
@@ -135,8 +132,6 @@ const selectedRow = ref<Film>();
 
 const config = useRuntimeConfig();
 
-const listMany = ref<boolean>(false);
-
 const watchStatusOptions = [
     {label: 'Можно посмотреть', value: FilmWatchStatus.ToWatch},
     {label: 'Нужно досмотреть', value: FilmWatchStatus.MustFinish},
@@ -202,12 +197,6 @@ const filmWatcherRepo = new FilmWatcherRepository();
             </template>
 
             <template #selected>
-                <UButton icon="i-heroicons-list-bullet"
-                         color="gray"
-                         @click="listMany = true">
-                    Изменить список
-                </UButton>
-
                 <UButton icon="i-heroicons-trash"
                          color="red"
                          @click="removeRows = true">
@@ -233,7 +222,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
 
             <template #actions-data="{row}">
                 <div class="flex gap-2.5 justify-end">
-                    <UTooltip text="Изменить">
+                    <UTooltip v-if="row.can_edit" text="Изменить">
                         <UButton color="gray"
                                  icon="i-heroicons-pencil"
                                  square
@@ -256,7 +245,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
                                  square/>
                     </UTooltip>
 
-                    <UTooltip text="Удалить">
+                    <UTooltip v-if="row.can_edit" text="Удалить">
                         <UButton color="red"
                                  icon="i-heroicons-trash"
                                  square
@@ -278,6 +267,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
                                 @cancel="removeRows = false"/>
 
         <ModalEditModel v-model="editRow"
+                        :readonly="!(editRow?.can_edit ?? true)"
                         :save="(state: any) => state.id > 0 ? repo.update(state).then(() => refresh()) : repo.store(state).then(() => refresh())">
             <template #create-title>Новый фильм</template>
             <template #edit-title="{state}">Фильм #{{ state.id }}</template>
@@ -295,38 +285,11 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 <UFormGroup label="Статус просмотра" name="status">
                     <USelectMenu :options="watchStatusOptions"
                                  value-attribute="value"
-                                 placeholder="Выберите подходящий список"
+                                 placeholder="Выберите статус из списка"
                                  v-model="state.status"/>
                 </UFormGroup>
             </template>
         </ModalEditModel>
-
-        <ModalInnerState v-model="listMany"
-                         :save="(state: any) => repo.updateListMany(selected.map((item: Film) => item.id), state.list_id, state.users.map((user: any) => user.id)).then(() => refresh()).then(() => selected = [])">
-            <template #title>Изменить список</template>
-
-            <template #default="{state}">
-                <UFormGroup label="Список" name="list_id">
-                    <UiRepoSearchSelectId :repo="new ListRepository()"
-                                          placeholder="Выберите подходящий список"
-                                          v-model="state.list_id"/>
-                </UFormGroup>
-
-                <UFormGroup label="Пользователи" name="users">
-                    <UiRepoSearchSelect :repo="new UserRepository()"
-                                        multiple
-                                        v-model="state.users">
-                        <template #label>
-                            {{
-                                Array.isArray(state.users) && state.users.length >
-                                0 ? state.users.map((user: User) => user.name)
-                                    .join(', ') : 'Выберите пользователей из списка'
-                            }}
-                        </template>
-                    </UiRepoSearchSelect>
-                </UFormGroup>
-            </template>
-        </ModalInnerState>
 
         <ModalRatings v-model="ratingRow"/>
     </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+    readonly?: boolean,
     save: (state: any) => Promise<any>
 }>();
 
@@ -18,6 +19,9 @@ watch(model, () => {
 const saving = ref<boolean>(false);
 
 async function save() {
+    if (props.readonly)
+        return;
+
     form.value.clear();
 
     try {
@@ -68,7 +72,7 @@ function close() {
 
                 <template #footer>
                     <div class="flex items-center justify-end">
-                        <UButton type="submit" :loading="saving"
+                        <UButton type="submit" :loading="saving" :disabled="readonly"
                                  class="dark:bg-fuchsia-300 dark:hover:bg-fuchsia-200">
                             Сохранить
                         </UButton>
