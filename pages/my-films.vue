@@ -3,6 +3,7 @@ import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
+import type Film from "~/resources/Film";
 
 const route = useRoute();
 
@@ -14,8 +15,8 @@ const {name, page, perPage, sort, selected, clearFilters} = useTabler('film_watc
     watchStatus.value = undefined;
 });
 
-const filmWatcherRepo              = new FilmWatcherRepository();
-const {data: filmWatchers, status} = await filmWatcherRepo.lazyList<PaginatedCollection<FilmWatcher>>(() => ({
+const filmWatcherRepo                       = new FilmWatcherRepository();
+const {data: filmWatchers, status, refresh} = await filmWatcherRepo.lazyList<PaginatedCollection<FilmWatcher>>(() => ({
     name          : name.value,
     page          : page.value,
     per_page      : perPage.value,
@@ -48,8 +49,32 @@ const columns = [
     {
         key  : 'status',
         label: 'Статус просмотра'
+    },
+    {
+        key: 'actions'
     }
 ];
+
+const ratingRow = ref<Film>();
+const removing  = ref<{ [key: string]: boolean }>({});
+const toast     = useToast();
+
+async function remove(watcher: FilmWatcher) {
+    removing.value[watcher.id] = true;
+
+    try {
+        await filmWatcherRepo.remove(watcher.id);
+        await refresh();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err.message,
+            color      : 'red'
+        });
+    } finally {
+        removing.value[watcher.id] = false;
+    }
+}
 </script>
 
 <template>
@@ -76,7 +101,7 @@ const columns = [
                      class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                      :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
 
-                <UIcon v-else name="i-heroicons-video-camera" class="w-8 h-8"/>
+                <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
                 <p>{{ row.film.name.length > 80 ? row.film.name.slice(0, 80) + '...' : row.film.name }}</p>
             </div>
@@ -89,7 +114,26 @@ const columns = [
         <template #status-data="{row}">
             <UiWatcherStatusUpdate :watcher="row"/>
         </template>
+
+        <template #actions-data="{row}">
+            <div class="flex items-center justify-end gap-2.5">
+                <UTooltip text="Оценки">
+                    <UButton color="gray"
+                             :icon="row.film.has_rating ? `i-heroicons-star-solid` : `i-heroicons-star`"
+                             @click="ratingRow = row.film"/>
+                </UTooltip>
+
+                <UTooltip text="Удалить">
+                    <UButton color="gray"
+                             icon="i-heroicons-trash-solid"
+                             :loading="removing[row.id] ?? false"
+                             @click="remove(row)"/>
+                </UTooltip>
+            </div>
+        </template>
     </UiSelectTable>
+
+    <ModalRatings v-model="ratingRow"/>
 </template>
 
 <style scoped>

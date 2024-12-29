@@ -4,8 +4,6 @@ import type Film from "~/resources/Film";
 import type Rating from "~/resources/Rating";
 import UserRepository from "~/repos/UserRepository";
 
-const repo = new RatingRepository();
-
 const film = defineModel<Film>();
 
 const ratings = ref<Rating[]>([]);
@@ -14,20 +12,21 @@ watch(film, async (value) => {
     if (!value)
         return;
 
-    ratings.value = (await repo.index(film.value.id)).data ?? [];
+    const repo = new RatingRepository(value.id);
+    ratings.value = (await repo.fetchList()).data ?? [];
 });
 
 async function refresh() {
     if (!film.value)
         return;
 
-    ratings.value = (await repo.index(film.value.id)).data ?? [];
+    const repo = new RatingRepository(film.value.id);
+    ratings.value = (await repo.fetchList()).data ?? [];
 }
 
 function makeRating(): Rating {
     return {
         id  : 0,
-        user: null,
         data: {
             comment: ''
         }
@@ -38,10 +37,12 @@ async function save(data: Rating) {
     if (!film.value)
         return;
 
+    const repo = new RatingRepository(film.value.id);
+
     if (data.id === 0)
-        await repo.store(film.value.id, data);
+        await repo.store(data);
     else
-        await repo.update(film.value.id, data);
+        await repo.update(data);
 
     await refresh();
 }
@@ -50,7 +51,13 @@ async function remove(data: Rating) {
     if (!film.value)
         return;
 
-    await repo.destroy(film.value.id, data.id);
+    if (data.id == 0) {
+        ratings.value = ratings.value.filter(_rating => data != _rating);
+        return;
+    }
+
+    const repo = new RatingRepository(film.value.id);
+    await repo.remove(data.id);
     await refresh();
 }
 </script>
@@ -82,12 +89,6 @@ async function remove(data: Rating) {
                     </template>
 
                     <div class="flex flex-col gap-2.5">
-                        <UFormGroup label="Пользователь">
-                            <UiRepoSearchSelect :repo="new UserRepository()"
-                                                placeholder="Выберите пользователя из списка"
-                                                v-model="rating.user"/>
-                        </UFormGroup>
-
                         <UFormGroup label="Комментарий">
                             <UInput v-model="rating.data.comment"/>
                         </UFormGroup>

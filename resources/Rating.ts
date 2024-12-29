@@ -2,7 +2,7 @@ import type User from "~/resources/User";
 
 export default interface Rating {
     id: number;
-    user: User | null;
+    user?: User | null;
     data: {
         comment: string
     };

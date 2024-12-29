@@ -7,7 +7,6 @@ export default interface Film {
     cover?: string | File;
     release_date?: string;
     description?: string;
-    ratings: number;
-    lists: number;
     is_mine?: boolean;
+    has_rating?: boolean;
 }

@@ -221,7 +221,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
                          class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                          :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>
 
-                    <UIcon v-else name="i-heroicons-video-camera" class="w-8 h-8"/>
+                    <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
                     <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
                 </div>
