@@ -44,42 +44,41 @@ const columns = [
 </script>
 
 <template>
-    <div>
-        <UiSelectTable :columns="columns"
-                       :rows="filmWatchers?.data ?? []"
-                       :page-count="filmWatchers?.meta.per_page"
-                       :total="filmWatchers?.meta.total"
-                       :loading="status == 'pending'"
-                       v-model:page="page"
-                       v-model:sort="sort"
-                       v-model="selected">
-            <template #filters>
-                <UiTableSearch v-model="name"/>
-                <UiTablePerPage v-model="perPage"/>
-                <UiTableClearFilters :name="name" @clear="clearFilters"/>
-            </template>
+    <UiSelectTable :columns="columns"
+                   :rows="filmWatchers?.data ?? []"
+                   :page-count="filmWatchers?.meta.per_page"
+                   :total="filmWatchers?.meta.total"
+                   :loading="status == 'pending'"
+                   class="grow h-0"
+                   v-model:page="page"
+                   v-model:sort="sort"
+                   v-model="selected">
+        <template #filters>
+            <UiTableSearch v-model="name"/>
+            <UiTablePerPage v-model="perPage"/>
+            <UiTableClearFilters :name="name" @clear="clearFilters"/>
+        </template>
 
-            <template #film.name-data="{row}">
-                <div class="flex items-center gap-2.5">
-                    <div v-if="row.film.cover"
-                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
-                         :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
+        <template #film.name-data="{row}">
+            <div class="flex items-center gap-2.5">
+                <div v-if="row.film.cover"
+                     class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
+                     :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
 
-                    <UIcon v-else name="i-heroicons-video-camera" class="w-8 h-8"/>
+                <UIcon v-else name="i-heroicons-video-camera" class="w-8 h-8"/>
 
-                    <p>{{ row.film.name.length > 80 ? row.film.name.slice(0, 80) + '...' : row.film.name }}</p>
-                </div>
-            </template>
+                <p>{{ row.film.name.length > 80 ? row.film.name.slice(0, 80) + '...' : row.film.name }}</p>
+            </div>
+        </template>
 
-            <template #film.format-data="{row}">
-                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
-            </template>
+        <template #film.format-data="{row}">
+            {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
+        </template>
 
-            <template #status-data="{row}">
-                <UiWatcherStatus :watcher="row"/>
-            </template>
-        </UiSelectTable>
-    </div>
+        <template #status-data="{row}">
+            <UiWatcherStatus :watcher="row"/>
+        </template>
+    </UiSelectTable>
 </template>
 
 <style scoped>

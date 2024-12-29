@@ -23,13 +23,13 @@ const nav = [{
 </script>
 
 <template>
-    <UContainer class="py-2.5">
+    <UContainer class="py-2.5 h-dvh">
         <Head>
             <title>MyFilms</title>
         </Head>
 
-        <div class="flex flex-col gap-2.5">
-            <div>
+        <div class="flex flex-col gap-2.5 h-full">
+            <div class="shrink-0">
                 <UHorizontalNavigation :links="nav"/>
 
                 <UDivider/>

@@ -20,11 +20,11 @@ defineEmits<{
 
 <template>
     <div class="flex flex-col border rounded-md dark:border-gray-700">
-        <div v-if="$slots.filters" class="flex flex-wrap gap-2.5 border-b p-2.5 dark:border-b-gray-700">
+        <div v-if="$slots.filters" class="flex flex-wrap gap-2.5 border-b p-2.5 dark:border-b-gray-700 shrink-0">
             <slot name="filters"></slot>
         </div>
 
-        <div v-if="$slots.actions" class="flex gap-2.5 justify-between p-2.5 border-b dark:border-b-gray-700">
+        <div v-if="$slots.actions" class="flex gap-2.5 justify-between p-2.5 border-b dark:border-b-gray-700 shrink-0">
             <div class="flex gap-2.5 items-center">
                 <slot v-if="selected && selected.length > 0" name="selected"></slot>
             </div>
@@ -33,21 +33,24 @@ defineEmits<{
             </div>
         </div>
 
-        <UTable :columns="columns"
-                :rows="rows"
-                :empty-state="{icon: 'i-heroicons-circle-stack-20-solid', label: 'Нет записей'}"
-                :loading-state="{icon: 'i-heroicons-arrow-path-20-solid', label: 'Загрузка'}"
-                :loading="loading"
-                v-model="selected"
-                v-model:sort="sort"
-                sort-mode="manual"
-                @select="$emit('select', $event)">
-            <template v-for="column in columns" #[`${column.key}-data`]="{row}">
-                <slot :name="`${column.key}-data`" :row="row"></slot>
-            </template>
-        </UTable>
+        <div class="grow overflow-auto">
+            <UTable :columns="columns"
+                    :rows="rows"
+                    :empty-state="{icon: 'i-heroicons-circle-stack-20-solid', label: 'Нет записей'}"
+                    :loading-state="{icon: 'i-heroicons-arrow-path-20-solid', label: 'Загрузка'}"
+                    :loading="loading"
+                    v-model="selected"
+                    v-model:sort="sort"
+                    sort-mode="manual"
+                    class="h-full"
+                    @select="$emit('select', $event)">
+                <template v-for="column in columns" #[`${column.key}-data`]="{row}">
+                    <slot :name="`${column.key}-data`" :row="row"></slot>
+                </template>
+            </UTable>
+        </div>
 
-        <div v-if="rows.length > 0" class="flex justify-between items-center border-t p-2.5 dark:border-t-gray-700">
+        <div v-if="rows.length > 0" class="flex justify-between items-center border-t p-2.5 dark:border-t-gray-700 shrink-0">
             <p v-if="total && ((selected && selected.length < 1) || !selected)" class="text-sm">Всего записей: {{ total }}</p>
             <p v-if="selected && selected.length > 0" class="text-sm">Выделено записей: {{ selected.length }}</p>
 
