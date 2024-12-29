@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const token = useCookie('token');
+
 const nav = [{
     label: 'Каталог',
     icon : 'i-heroicons-folder-open',
@@ -7,18 +9,15 @@ const nav = [{
     label: 'Мои фильмы',
     icon : 'i-heroicons-film',
     to   : '/my-films'
-}, {
-    label: 'Списки',
-    icon : 'i-heroicons-list-bullet',
-    to   : '/lists'
-}, {
-    label: 'Пользователи',
-    icon : 'i-heroicons-users',
-    to   : '/users'
-}, {
-    label: 'Рулетка',
-    icon : 'i-heroicons-chart-pie',
-    to   : '/reel'
+}];
+
+const rightNav = [{
+    label: 'Выход',
+    icon : 'i-heroicons-arrow-right-on-rectangle-20-solid',
+    click: () => {
+        token.value = '';
+        navigateTo('/login');
+    }
 }];
 </script>
 
@@ -30,7 +29,12 @@ const nav = [{
 
         <div class="flex flex-col gap-2.5 h-full">
             <div class="shrink-0">
-                <UHorizontalNavigation :links="nav"/>
+                <div class="flex">
+                    <UHorizontalNavigation :links="nav"/>
+
+                    <UHorizontalNavigation :links="rightNav"
+                                           class="justify-end"/>
+                </div>
 
                 <UDivider/>
             </div>
