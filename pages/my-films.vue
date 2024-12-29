@@ -4,7 +4,15 @@ import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 
-const {name, page, perPage, sort, selected, clearFilters} = useTabler('film_watchers');
+const route = useRoute();
+
+const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
+
+const {name, page, perPage, sort, selected, clearFilters} = useTabler('film_watchers', () => ({
+    status: watchStatus.value
+}), () => {
+    watchStatus.value = undefined;
+});
 
 const filmWatcherRepo              = new FilmWatcherRepository();
 const {data: filmWatchers, status} = await filmWatcherRepo.lazyList<PaginatedCollection<FilmWatcher>>(() => ({
@@ -12,7 +20,8 @@ const {data: filmWatchers, status} = await filmWatcherRepo.lazyList<PaginatedCol
     page          : page.value,
     per_page      : perPage.value,
     sort_column   : sort.value.column,
-    sort_direction: sort.value.direction
+    sort_direction: sort.value.direction,
+    ...watchStatus.value ? {watch_status: watchStatus.value} : {}
 }));
 
 const columns = [
@@ -56,7 +65,9 @@ const columns = [
         <template #filters>
             <UiTableSearch v-model="name"/>
             <UiTablePerPage v-model="perPage"/>
-            <UiTableClearFilters :name="name" @clear="clearFilters"/>
+            <UiTableWatcherStatus placeholder="Статус просмотра"
+                                  v-model="watchStatus"/>
+            <UiTableClearFilters @clear="clearFilters"/>
         </template>
 
         <template #film.name-data="{row}">
@@ -76,7 +87,7 @@ const columns = [
         </template>
 
         <template #status-data="{row}">
-            <UiWatcherStatus :watcher="row"/>
+            <UiWatcherStatusUpdate :watcher="row"/>
         </template>
     </UiSelectTable>
 </template>

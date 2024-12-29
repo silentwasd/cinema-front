@@ -1,4 +1,4 @@
-export default function (tableName: string) {
+export default function (tableName: string, extraQuery: () => any = () => ({}), extraClear: () => void = () => {}) {
     const route  = useRoute();
 
     const name     = ref((route.query.name ?? '') as string);
@@ -10,8 +10,8 @@ export default function (tableName: string) {
         direction: 'desc'
     }));
 
-    watch(() => [name.value, page.value], () => {
-        navigateTo(`?name=${name.value}&page=${page.value}`);
+    watch(() => [name.value, page.value, ...Object.values(extraQuery())], () => {
+        navigateTo('?' + querify({name: name.value, page: page.value, ...extraQuery()}));
     });
 
     watch(name, () => page.value = 1);
@@ -19,6 +19,7 @@ export default function (tableName: string) {
     function clearFilters() {
         name.value = '';
         page.value = 1;
+        extraClear();
     }
 
     return {name, page, perPage, sort, selected, clearFilters};

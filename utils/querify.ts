@@ -7,7 +7,8 @@ export default function (params: any): URLSearchParams {
             return;
         }
 
-        filtered.append(key, params[key]);
+        if (params[key] !== undefined)
+            filtered.append(key, params[key]);
     });
 
     return filtered;
