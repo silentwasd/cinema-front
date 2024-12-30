@@ -4,11 +4,11 @@ const token = useCookie('token');
 const nav = [{
     label: 'Каталог',
     icon : 'i-heroicons-folder-open',
-    to   : '/'
+    to   : '/management/catalog'
 }, {
     label: 'Мои фильмы',
     icon : 'i-heroicons-film',
-    to   : '/my-films'
+    to   : '/management/my-films'
 }];
 
 const rightNav = [{

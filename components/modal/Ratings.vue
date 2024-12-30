@@ -4,6 +4,10 @@ import type Film from "~/resources/Film";
 import type Rating from "~/resources/Rating";
 import UserRepository from "~/repos/UserRepository";
 
+const emit = defineEmits<{
+    (e: 'updated'): void
+}>();
+
 const film = defineModel<Film>();
 
 const ratings = ref<Rating[]>([]);
@@ -45,6 +49,8 @@ async function save(data: Rating) {
         await repo.update(data);
 
     await refresh();
+
+    emit('updated');
 }
 
 async function remove(data: Rating) {
@@ -59,6 +65,8 @@ async function remove(data: Rating) {
     const repo = new RatingRepository(film.value.id);
     await repo.remove(data.id);
     await refresh();
+
+    emit('updated');
 }
 </script>
 

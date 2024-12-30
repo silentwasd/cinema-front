@@ -2,7 +2,8 @@
 import ApiClient from "~/services/ApiClient";
 
 definePageMeta({
-    layout: 'auth'
+    layout    : 'auth',
+    middleware: 'auth'
 });
 
 const state = ref({
@@ -24,7 +25,7 @@ async function submit() {
             password: state.value.password
         });
         token.value    = response.token;
-        await navigateTo('/');
+        await navigateTo('/management/catalog');
     } catch (e: any) {
         toast.add({
             title      : 'Ошибка',

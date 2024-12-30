@@ -5,6 +5,10 @@ import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import type Film from "~/resources/Film";
 
+definePageMeta({
+    middleware: 'auth'
+});
+
 const route = useRoute();
 
 const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
@@ -132,7 +136,7 @@ async function remove(watcher: FilmWatcher) {
         </template>
     </UiSelectTable>
 
-    <ModalRatings v-model="ratingRow"/>
+    <ModalRatings v-model="ratingRow" @updated="refresh"/>
 </template>
 
 <style scoped>

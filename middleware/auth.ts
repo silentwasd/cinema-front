@@ -3,4 +3,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
     if (!token.value && !to.path.startsWith('/login'))
         return navigateTo('/login');
+    else if (token.value && to.path.startsWith('/login'))
+        return navigateTo('/management/catalog');
 });
