@@ -29,11 +29,12 @@ const rightNav = [{
 
         <div class="flex flex-col gap-2.5 h-full">
             <div class="shrink-0">
-                <div class="flex">
-                    <UHorizontalNavigation :links="nav"/>
+                <div class="flex overflow-auto md:overflow-hidden">
+                    <UHorizontalNavigation :links="nav"
+                                           class="w-auto md:w-full"/>
 
                     <UHorizontalNavigation :links="rightNav"
-                                           class="justify-end"/>
+                                           class="md:justify-end"/>
                 </div>
 
                 <UDivider/>

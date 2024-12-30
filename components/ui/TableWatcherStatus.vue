@@ -12,6 +12,7 @@ const watchStatusOptions = [
 
 <template>
     <USelectMenu :options="watchStatusOptions"
+                 class="w-full md:w-auto"
                  value-attribute="value"/>
 </template>
 

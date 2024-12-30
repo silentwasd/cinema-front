@@ -9,7 +9,7 @@ const route = useRoute();
 
 const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
 
-const {name, page, perPage, sort, selected, clearFilters} = useTabler('film_watchers', () => ({
+const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () => ({
     status: watchStatus.value
 }), () => {
     watchStatus.value = undefined;
@@ -85,8 +85,7 @@ async function remove(watcher: FilmWatcher) {
                    :loading="status == 'pending'"
                    class="grow h-0"
                    v-model:page="page"
-                   v-model:sort="sort"
-                   v-model="selected">
+                   v-model:sort="sort">
         <template #filters>
             <UiTableSearch v-model="name"/>
             <UiTablePerPage v-model="perPage"/>

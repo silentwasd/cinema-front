@@ -51,11 +51,19 @@ defineEmits<{
         </div>
 
         <div v-if="rows.length > 0" class="flex justify-between items-center border-t p-2.5 dark:border-t-gray-700 shrink-0">
-            <p v-if="total && ((selected && selected.length < 1) || !selected)" class="text-sm">Всего записей: {{ total }}</p>
-            <p v-if="selected && selected.length > 0" class="text-sm">Выделено записей: {{ selected.length }}</p>
+            <div class="hidden md:block">
+                <p v-if="total && ((selected && selected.length < 1) || !selected)" class="text-sm">Всего записей: {{ total }}</p>
+                <p v-if="selected && selected.length > 0" class="text-sm">Выделено записей: {{ selected.length }}</p>
+            </div>
 
-            <UPagination v-if="page && pageCount && total" v-model="page" :page-count="pageCount" :total="total"
-                         :ui="{rounded: 'rounded-none'}"/>
+            <div class="flex justify-center w-full md:justify-end md:w-auto">
+                <UPagination v-if="page && pageCount && total"
+                             v-model="page"
+                             :page-count="pageCount"
+                             :total="total"
+                             :max="6"
+                             :ui="{rounded: 'rounded-none'}"/>
+            </div>
         </div>
     </div>
 </template>
