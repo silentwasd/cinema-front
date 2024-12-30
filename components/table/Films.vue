@@ -196,14 +196,6 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 </UButton>
             </template>
 
-            <template #selected>
-                <UButton icon="i-heroicons-trash"
-                         color="red"
-                         @click="removeRows = true">
-                    Удалить
-                </UButton>
-            </template>
-
             <template #name-data="{row}">
                 <div class="flex items-center gap-2.5">
                     <div v-if="row.cover"
@@ -259,12 +251,6 @@ const filmWatcherRepo = new FilmWatcherRepository();
                             @confirm="remove"
                             @cancel="!removing ? removeRow = undefined : null"
                             :removing="removing"/>
-
-        <ModalRemoveManyConfirm :opened="removeRows"
-                                :removing="removing"
-                                :count="selected.length"
-                                @confirm="removeMany"
-                                @cancel="removeRows = false"/>
 
         <ModalEditModel v-model="editRow"
                         :readonly="!(editRow?.can_edit ?? true)"
