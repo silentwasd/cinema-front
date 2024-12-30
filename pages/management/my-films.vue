@@ -6,7 +6,8 @@ import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import type Film from "~/resources/Film";
 
 definePageMeta({
-    middleware: 'auth'
+    middleware: 'auth',
+    layout    : 'management'
 });
 
 const route = useRoute();

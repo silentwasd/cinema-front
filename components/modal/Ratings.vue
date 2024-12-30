@@ -2,7 +2,6 @@
 import RatingRepository from "~/repos/RatingRepository";
 import type Film from "~/resources/Film";
 import type Rating from "~/resources/Rating";
-import UserRepository from "~/repos/UserRepository";
 
 const emit = defineEmits<{
     (e: 'updated'): void

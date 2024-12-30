@@ -6,7 +6,8 @@ import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import FilmRepository from "~/repos/FilmRepository";
 
 definePageMeta({
-    middleware: 'auth'
+    middleware: 'auth',
+    layout    : 'management'
 });
 
 const repo = new FilmRepository();

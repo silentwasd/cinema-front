@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
     devtools: {enabled: true},
 
-    modules: ["@nuxt/ui"],
+    modules: ["@nuxt/ui", '@nuxtjs/google-fonts'],
 
     runtimeConfig: {
         public: {
@@ -21,4 +21,13 @@ export default defineNuxtConfig({
             cert: '../certs/film-back-local.vrkitty.ru/fullchain.pem'
         }
     },
+
+    googleFonts: {
+        families: {
+            Roboto: {
+                wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+                ital: [300]
+            }
+        }
+    }
 })
