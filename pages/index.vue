@@ -11,9 +11,21 @@ const {data: films} = await filmRepo.list(`films`);
 
 <template>
     <div class="font-roboto">
-        <UContainer class="py-5 text-center md:py-10 md:text-start">
-            <h1 class="text-4xl font-black">ВКинопоиск</h1>
-            <p class="text-xl font-light">Сохрани каждый момент.</p>
+        <UContainer class="py-5 md:py-6">
+            <NuxtLink class="flex gap-2.5 items-center" to="/">
+                <UIcon name="i-heroicons-film" class="hidden md:block text-8xl shrink-0"/>
+
+                <div class="grow">
+                    <h1 class="text-4xl font-black">ВКинопоиск</h1>
+                    <p class="text-xl font-light">Сохрани каждый момент</p>
+                </div>
+
+                <div class="shrink-0">
+                    <LazyClientOnly>
+                        <UiColorModeButton/>
+                    </LazyClientOnly>
+                </div>
+            </NuxtLink>
         </UContainer>
 
         <div class="h-[60dvh] bg-center bg-cover"
