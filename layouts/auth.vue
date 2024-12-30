@@ -30,9 +30,28 @@ useSeoMeta({
 </script>
 
 <template>
-    <div class="flex p-5 md:p-0 md:items-center justify-center w-dvw h-dvh">
-        <slot/>
-    </div>
+    <UContainer class="py-5 md:py-6 font-roboto">
+        <div class="flex items-center mb-10">
+            <NuxtLink class="flex gap-2.5 items-center grow" to="/">
+                <UIcon name="i-heroicons-film" class="hidden md:block text-8xl shrink-0"/>
+
+                <div class="grow">
+                    <h1 class="text-4xl font-black">ВКинопоиск</h1>
+                    <p class="text-xl font-light">Сохрани каждый момент</p>
+                </div>
+            </NuxtLink>
+
+            <div class="shrink-0">
+                <LazyClientOnly>
+                    <UiColorModeButton/>
+                </LazyClientOnly>
+            </div>
+        </div>
+
+        <div class="flex justify-center">
+            <slot/>
+        </div>
+    </UContainer>
 </template>
 
 <style scoped>

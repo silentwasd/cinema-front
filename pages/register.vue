@@ -7,29 +7,39 @@ definePageMeta({
 });
 
 const state = ref({
-    email   : '',
-    password: ''
+    name                 : '',
+    email                : '',
+    password             : '',
+    password_confirmation: ''
 });
 
 const loading = ref<boolean>(false);
 const token   = useCookie<string>('token');
 const toast   = useToast();
+const form    = ref();
 
 async function submit() {
+    form.value.clear();
     loading.value = true;
 
     try {
         const client   = new ApiClient();
-        const response = await client.post<{ token: string }>('/login', {
-            email   : state.value.email,
-            password: state.value.password
-        });
+        const response = await client.post<{ token: string }>('/register', state.value);
         token.value    = response.token;
         await navigateTo('/management/catalog');
-    } catch (e: any) {
+    } catch (err: any) {
+        if (err.statusCode === 422) {
+            form.value.setErrors(Object.keys(err.data.errors).map((key: string) => ({
+                message: err.data.errors[key].join('. '),
+                path   : key
+            })));
+
+            return;
+        }
+
         toast.add({
             title      : 'Ошибка',
-            description: e?.data?.message || e?.message,
+            description: err?.data?.message || err?.message,
             color      : 'red'
         });
     } finally {
@@ -39,22 +49,41 @@ async function submit() {
 </script>
 
 <template>
-    <UForm :state="state" @submit="submit">
+    <UForm ref="form" :state="state" @submit="submit">
         <div class="flex flex-col gap-5 border dark:border-gray-800 p-5 rounded-md shadow-xl w-[300px]">
-            <UFormGroup label="E-mail">
+            <UFormGroup label="Имя" name="name">
+                <UInput leading-icon="i-heroicons-user"
+                        placeholder="Иван"
+                        size="lg"
+                        autocomplete="one-time-code"
+                        v-model="state.name"/>
+            </UFormGroup>
+
+            <UFormGroup label="E-mail" name="email">
                 <UInput type="email"
                         leading-icon="i-heroicons-at-symbol"
                         placeholder="example@example.com"
                         size="lg"
+                        autocomplete="one-time-code"
                         v-model="state.email"/>
             </UFormGroup>
 
-            <UFormGroup label="Пароль">
+            <UFormGroup label="Пароль" name="password">
                 <UInput type="password"
                         leading-icon="i-heroicons-key"
                         placeholder="••••••••"
                         size="lg"
+                        autocomplete="one-time-code"
                         v-model="state.password"/>
+            </UFormGroup>
+
+            <UFormGroup label="Повторите пароль" name="password_confirmation">
+                <UInput type="password"
+                        leading-icon="i-heroicons-key"
+                        placeholder="••••••••"
+                        size="lg"
+                        autocomplete="one-time-code"
+                        v-model="state.password_confirmation"/>
             </UFormGroup>
 
             <div class="flex flex-col gap-2.5">
@@ -64,12 +93,12 @@ async function submit() {
                          class="w-full"
                          :loading="loading"/>
 
-                <UButton label="Зарегистрироваться"
+                <UButton label="Уже есть аккаунт"
                          type="submit"
                          size="lg"
                          color="gray"
                          class="w-full"
-                         to="/register"/>
+                         to="/login"/>
             </div>
         </div>
     </UForm>
