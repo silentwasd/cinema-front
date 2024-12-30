@@ -12,6 +12,7 @@ const state = ref({
 
 const loading = ref<boolean>(false);
 const token   = useCookie<string>('token');
+const toast   = useToast();
 
 async function submit() {
     loading.value = true;
@@ -25,7 +26,11 @@ async function submit() {
         token.value    = response.token;
         await navigateTo('/');
     } catch (e: any) {
-        console.log('Whoops', e.data);
+        toast.add({
+            title      : 'Ошибка',
+            description: e?.data?.message || e?.message,
+            color      : 'red'
+        });
     } finally {
         loading.value = false;
     }

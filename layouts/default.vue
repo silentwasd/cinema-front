@@ -40,7 +40,7 @@ const rightNav = [{
                 <UDivider/>
             </div>
 
-            <NuxtPage/>
+            <slot/>
         </div>
     </UContainer>
 </template>
