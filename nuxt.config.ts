@@ -8,8 +8,9 @@ export default defineNuxtConfig({
 
     runtimeConfig: {
         public: {
-            apiUrl    : process.env.NUXT_API_URL,
-            storageUrl: process.env.NUXT_STORAGE_URL
+            apiUrl     : process.env.NUXT_API_URL,
+            storageUrl : process.env.NUXT_STORAGE_URL,
+            externalUrl: process.env.NUXT_EXTERNAL_URL
         }
     },
 

@@ -2,6 +2,21 @@
 const token = useCookie('token');
 const color = useColorMode();
 
+useHead({
+    link: [
+        {
+            rel  : 'icon',
+            href : '/icon/light.png',
+            media: '(prefers-color-scheme: light)'
+        },
+        {
+            rel  : 'icon',
+            href : '/icon/dark.png',
+            media: '(prefers-color-scheme: dark)'
+        }
+    ]
+});
+
 const nav = [{
     label: 'Каталог',
     icon : 'i-heroicons-folder-open-20-solid',
@@ -30,7 +45,7 @@ const rightNav = computed(() => [{
 <template>
     <UContainer class="py-2.5 h-dvh">
         <Head>
-            <title>MyFilms</title>
+            <title>ВКинопоиск</title>
         </Head>
 
         <div class="flex flex-col gap-2.5 h-full">

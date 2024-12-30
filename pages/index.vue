@@ -1,8 +1,33 @@
 <script setup lang="ts">
 import FilmRepository from "~/repos/public/FilmRepository";
 
+const config = useRuntimeConfig();
+
 useSeoMeta({
-    title: 'ВКинопоиск'
+    title        : 'ВКинопоиск',
+    description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogTitle      : 'ВКинопоиск',
+    ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogImage      : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl,
+    ogType       : 'website',
+    ogLocale     : 'ru_RU',
+    ogSiteName   : 'ВКинопоиск'
+});
+
+useHead({
+    link: [
+        {
+            rel  : 'icon',
+            href : '/icon/light.png',
+            media: '(prefers-color-scheme: light)'
+        },
+        {
+            rel  : 'icon',
+            href : '/icon/dark.png',
+            media: '(prefers-color-scheme: dark)'
+        }
+    ]
 });
 
 const filmRepo      = new FilmRepository();
@@ -31,7 +56,7 @@ const {data: films} = await filmRepo.list(`films`);
         <div class="h-[60dvh] bg-center bg-cover"
              style="background-image: url('/img/cinema.png');">
             <div
-                class="bg-gradient-to-r from-gray-950 via-transparent/10 md:via-transparent to-gray-950 text-gray-50 h-full">
+                class="bg-gradient-to-r from-gray-950 via-transparent/10 to-gray-950 text-gray-50 h-full">
                 <UContainer class="flex flex-col items-center justify-center gap-5 h-full">
                     <h3 class="font-bold text-2xl md:text-4xl text-center drop-shadow-md">
                         Отслеживай просмотр<br>
