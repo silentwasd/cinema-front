@@ -4,6 +4,7 @@ import {FilmFormat} from "~/types/enums/FilmFormat";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import FilmRepository from "~/repos/FilmRepository";
+import type PaginatedCollection from "~/types/PaginatedCollection";
 
 definePageMeta({
     middleware: 'auth',
@@ -14,13 +15,13 @@ const repo = new FilmRepository();
 
 const {name, page, perPage, sort, clearFilters} = useTabler('films');
 
-const {data: rows, refresh, status} = await repo.index(() => querify({
+const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Film>>(() => ({
     name          : name.value,
     page          : page.value,
     per_page      : perPage.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction
-}).toString());
+}));
 
 let columns = [
     {
@@ -59,7 +60,7 @@ async function remove() {
     try {
         removing.value = true;
 
-        await repo.destroy(removeRow.value.id);
+        await repo.remove(removeRow.value.id);
 
         await refresh();
     } finally {
@@ -126,7 +127,8 @@ const filmWatcherRepo = new FilmWatcherRepository();
         </template>
 
         <template #name-data="{row}">
-            <div class="flex items-center gap-2.5">
+            <NuxtLink class="flex items-center gap-2.5 hover:underline"
+                      :to="`/management/films/${row.id}`">
                 <div v-if="row.cover"
                      class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                      :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>
@@ -134,7 +136,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
                 <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
-            </div>
+            </NuxtLink>
         </template>
 
         <template #format-data="{row}">

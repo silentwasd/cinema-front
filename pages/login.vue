@@ -25,7 +25,7 @@ async function submit() {
             password: state.value.password
         });
         token.value    = response.token;
-        await navigateTo('/management/catalog');
+        await navigateTo('/management/films');
     } catch (e: any) {
         toast.add({
             title      : 'Ошибка',

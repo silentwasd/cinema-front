@@ -111,8 +111,8 @@ async function save(state: any) {
         </template>
 
         <template #actions-data="{row}">
-            <div class="flex items-center justify-end gap-2.5">
-                <UTooltip v-if="row.can_edit" text="Изменить">
+            <div v-if="row.can_edit" class="flex items-center justify-end gap-2.5">
+                <UTooltip text="Изменить">
                     <UButton color="gray"
                              icon="i-heroicons-pencil-solid"
                              square

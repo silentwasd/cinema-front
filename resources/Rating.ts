@@ -6,4 +6,5 @@ export default interface Rating {
     data: {
         comment: string
     };
+    created_at?: number;
 }

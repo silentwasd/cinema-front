@@ -20,7 +20,7 @@ useHead({
 const nav = [{
     label: 'Каталог',
     icon : 'i-heroicons-folder-open-20-solid',
-    to   : '/management/catalog'
+    to   : '/management/films'
 }, {
     label: 'Мои фильмы',
     icon : 'i-heroicons-film-16-solid',

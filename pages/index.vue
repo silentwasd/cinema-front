@@ -67,7 +67,7 @@ const {data: films} = await filmRepo.list(`films`);
                              size="xl"
                              color="gray"
                              class="md:text-xl"
-                             to="/management/catalog"
+                             to="/management/films"
                              :ui="{rounded: 'rounded-xl', color: {gray: {solid: 'ring-0'}}}"/>
                 </UContainer>
             </div>
@@ -78,7 +78,7 @@ const {data: films} = await filmRepo.list(`films`);
 
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                 <NuxtLink class="block"
-                          to="/management/catalog"
+                          to="/management/films/films"
                           v-for="film in films?.data ?? []">
                     <img v-if="film.cover"
                          :src="fileUrl(film.cover)"
