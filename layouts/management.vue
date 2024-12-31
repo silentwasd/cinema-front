@@ -25,6 +25,10 @@ const nav = [{
     label: 'Мои фильмы',
     icon : 'i-heroicons-film-16-solid',
     to   : '/management/my-films'
+}, {
+    label: 'Люди',
+    icon : 'i-heroicons-users-20-solid',
+    to   : '/management/people'
 }];
 
 const rightNav = computed(() => [{
