@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FilmRepository from "~/repos/FilmRepository";
 import type Film from "~/resources/Film";
+import FilmPeopleEdit from "~/components/ui/FilmPeopleEdit.vue";
 
 definePageMeta({
     middleware: 'auth',
@@ -14,6 +15,8 @@ const filmRepo = new FilmRepository();
 const {data: film} = await filmRepo.show(`film.${filmId}`, filmId);
 
 const filmData = computed<Film | null>(() => film.value?.data || null);
+
+const peopleEdit = ref<boolean>(false);
 </script>
 
 <template>
@@ -37,6 +40,38 @@ const filmData = computed<Film | null>(() => film.value?.data || null);
                 </div>
 
                 <p class="text-xl font-light">{{ filmData.description }}</p>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center">
+                    <h1 class="font-bold text-2xl">Люди</h1>
+
+                    <UButton color="gray"
+                             label="Редактировать"
+                             icon="i-heroicons-pencil-solid"
+                             @click="peopleEdit = !peopleEdit"/>
+                </div>
+
+                <FilmPeopleEdit v-if="peopleEdit"
+                                class="mt-2.5"
+                                :film-id="filmData.id"/>
+
+                <div v-else-if="filmData.people" class="flex flex-wrap gap-5 mt-5">
+                    <div v-for="person in filmData.people"
+                         class="flex items-center gap-2.5 w-[250px]"
+                         :key="person.id">
+                        <div v-if="person.person?.photo"
+                             :style="`background-image: url(${fileUrl(person.person?.photo)})`"
+                             class="block rounded-md w-[80px] h-[80px] shrink-0 bg-cover bg-center"/>
+
+                        <div class="font-roboto">
+                            <p class="font-light italic leading-3">{{ personRole(person.role) }}</p>
+                            <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{ person.person?.name }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p v-else>Людей здесь нет.</p>
             </div>
 
             <div v-if="filmData.ratings.length > 0">

@@ -33,6 +33,7 @@ async function search(query: string) {
                  :loading="loading"
                  :searchable="search"
                  :searchable-placeholder="searchablePlaceholder ?? 'Поиск...'"
+                 :placeholder="placeholder"
                  option-attribute="name"
                  value-attribute="id"
                  trailing>

@@ -1,5 +1,6 @@
 import type {FilmFormat} from "~/types/enums/FilmFormat";
 import type Rating from "~/resources/Rating";
+import type FilmPersonResource from "~/resources/FilmPersonResource";
 
 export default interface Film {
     id: number;
@@ -12,4 +13,5 @@ export default interface Film {
     has_rating?: boolean;
     can_edit?: boolean;
     ratings?: Rating[];
+    people?: FilmPersonResource[];
 }
