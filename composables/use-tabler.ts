@@ -14,7 +14,7 @@ export default function (tableName: string, extraQuery: () => any = () => ({}), 
         navigateTo('?' + querify({name: name.value, page: page.value, ...extraQuery()}));
     });
 
-    watch(name, () => page.value = 1);
+    watch(() => [name.value, ...Object.values(extraQuery())], () => page.value = 1);
 
     function clearFilters() {
         name.value = '';
