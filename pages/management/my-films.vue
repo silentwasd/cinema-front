@@ -100,7 +100,8 @@ async function remove(watcher: FilmWatcher) {
         </template>
 
         <template #film.name-data="{row}">
-            <div class="flex items-center gap-2.5">
+            <NuxtLink class="flex items-center gap-2.5 hover:underline"
+                      :to="`/management/films/${row.id}`">
                 <div v-if="row.film.cover"
                      class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                      :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
@@ -108,7 +109,7 @@ async function remove(watcher: FilmWatcher) {
                 <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
                 <p>{{ row.film.name.length > 80 ? row.film.name.slice(0, 80) + '...' : row.film.name }}</p>
-            </div>
+            </NuxtLink>
         </template>
 
         <template #film.format-data="{row}">
