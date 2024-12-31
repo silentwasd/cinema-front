@@ -101,7 +101,7 @@ async function remove(watcher: FilmWatcher) {
 
         <template #film.name-data="{row}">
             <NuxtLink class="flex items-center gap-2.5 hover:underline"
-                      :to="`/management/films/${row.id}`">
+                      :to="`/management/films/${row.film.id}`">
                 <div v-if="row.film.cover"
                      class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                      :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
