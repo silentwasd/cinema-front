@@ -46,7 +46,8 @@ const peopleEdit = ref<boolean>(false);
                 <div class="flex justify-between items-center">
                     <h1 class="font-bold text-2xl">Люди</h1>
 
-                    <UButton color="gray"
+                    <UButton v-if="filmData.can_edit"
+                             color="gray"
                              label="Редактировать"
                              icon="i-heroicons-pencil-solid"
                              @click="peopleEdit = !peopleEdit"/>
@@ -67,6 +68,7 @@ const peopleEdit = ref<boolean>(false);
                         <div class="font-roboto">
                             <p class="font-light italic leading-3">{{ personRole(person.role) }}</p>
                             <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{ person.person?.name }}</p>
+                            <p class="leading-4">{{ person.role_details }}</p>
                         </div>
                     </div>
                 </div>
