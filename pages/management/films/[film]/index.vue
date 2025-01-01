@@ -73,7 +73,7 @@ const peopleEdit = ref<boolean>(false);
                     </div>
                 </div>
 
-                <p v-else>Людей здесь нет.</p>
+                <p v-if="!peopleEdit && !filmData.people">Людей здесь нет.</p>
             </div>
 
             <div v-if="filmData.ratings.length > 0">
