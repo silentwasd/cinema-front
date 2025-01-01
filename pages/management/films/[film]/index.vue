@@ -65,6 +65,10 @@ const peopleEdit = ref<boolean>(false);
                              :style="`background-image: url(${fileUrl(person.person?.photo)})`"
                              class="block rounded-md w-[80px] h-[80px] shrink-0 bg-cover bg-center"/>
 
+                        <div v-else>
+                            <UIcon name="i-heroicons-user-circle" class="text-7xl"/>
+                        </div>
+
                         <div class="font-roboto">
                             <p class="font-light italic leading-3">{{ personRole(person.role) }}</p>
                             <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{ person.person?.name }}</p>

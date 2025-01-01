@@ -8,11 +8,12 @@ export default class PersonRepository extends CrudRepository<PersonResource, num
     override postFiles: boolean = true;
     override putFiles: boolean  = true;
 
-    public search(query: string): Promise<Collection<PersonResource>> {
+    public search(query: string, id?: any): Promise<Collection<PersonResource>> {
         return this.client.get(`${this.baseUrl}?` + querify({
             name          : query,
             sort_column   : 'name',
-            sort_direction: 'asc'
+            sort_direction: 'asc',
+            model_id      : id ?? null
         }).toString());
     }
 }

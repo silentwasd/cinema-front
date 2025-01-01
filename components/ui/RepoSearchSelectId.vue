@@ -16,7 +16,7 @@ const options = ref<any>([]);
 async function search(query: string) {
     loading.value = true;
 
-    const formats = await props.repo.search(query);
+    const formats = await props.repo.search(query, model.value);
 
     loading.value = false;
 
@@ -42,7 +42,9 @@ async function search(query: string) {
         </template>
 
         <template #label>
-            <slot name="label" :options="options">{{ options.find((option: any) => option.id === model)?.name ?? placeholder }}</slot>
+            <slot name="label" :options="options">
+                {{ options.find((option: any) => option.id === model)?.name ?? placeholder }}
+            </slot>
         </template>
     </USelectMenu>
 </template>
