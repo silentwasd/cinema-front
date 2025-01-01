@@ -57,7 +57,7 @@ const peopleEdit = ref<boolean>(false);
                                 class="mt-2.5"
                                 :film-id="filmData.id"/>
 
-                <div v-else-if="filmData.people" class="flex flex-wrap gap-5 mt-5">
+                <div v-else-if="filmData.people.length > 0" class="flex flex-wrap gap-5 mt-5">
                     <div v-for="person in filmData.people"
                          class="flex items-center gap-2.5 w-[250px]"
                          :key="person.id">
@@ -73,7 +73,7 @@ const peopleEdit = ref<boolean>(false);
                     </div>
                 </div>
 
-                <p v-if="!peopleEdit && !filmData.people">Людей здесь нет.</p>
+                <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
             </div>
 
             <div v-if="filmData.ratings.length > 0">
