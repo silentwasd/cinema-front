@@ -85,7 +85,7 @@ function peopleEditSwitch() {
                     </div>
                 </div>
 
-                <div v-if="!peopleEdit && filmData.people.length > 6" class="flex justify-center">
+                <div v-if="!peopleEdit && filmData.people.length > 6" class="flex justify-center mt-1.5">
                     <UButton :icon="peopleDetails ? 'i-heroicons-chevron-double-up' : 'i-heroicons-chevron-double-down'"
                              color="gray"
                              size="xl"
