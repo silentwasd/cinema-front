@@ -80,7 +80,7 @@ function peopleEditSwitch() {
                         <div class="font-roboto">
                             <p class="font-light italic leading-3">{{ personRole(person.role) }}</p>
                             <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{ person.person?.name }}</p>
-                            <p class="leading-4">{{ person.role_details }}</p>
+                            <p class="leading-4 line-clamp-1">{{ person.role_details }}</p>
                         </div>
                     </div>
                 </div>
