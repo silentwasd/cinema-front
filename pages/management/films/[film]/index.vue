@@ -12,11 +12,19 @@ const route    = useRoute();
 const filmId   = parseInt(route.params.film as string);
 const filmRepo = new FilmRepository();
 
-const {data: film} = await filmRepo.show(`film.${filmId}`, filmId);
+const {data: film, refresh} = await filmRepo.show(`film.${filmId}`, filmId);
 
 const filmData = computed<Film | null>(() => film.value?.data || null);
 
-const peopleEdit = ref<boolean>(false);
+const peopleEdit    = ref<boolean>(false);
+const peopleDetails = ref<boolean>(false);
+
+function peopleEditSwitch() {
+    peopleEdit.value = !peopleEdit.value;
+
+    if (!peopleEdit.value)
+        refresh();
+}
 </script>
 
 <template>
@@ -42,7 +50,7 @@ const peopleEdit = ref<boolean>(false);
                 <p class="text-xl font-light">{{ filmData.description }}</p>
             </div>
 
-            <div>
+            <div v-if="filmData.people">
                 <div class="flex justify-between items-center">
                     <h1 class="font-bold text-2xl">Люди</h1>
 
@@ -50,7 +58,7 @@ const peopleEdit = ref<boolean>(false);
                              color="gray"
                              label="Редактировать"
                              icon="i-heroicons-pencil-solid"
-                             @click="peopleEdit = !peopleEdit"/>
+                             @click="peopleEditSwitch"/>
                 </div>
 
                 <FilmPeopleEdit v-if="peopleEdit"
@@ -58,7 +66,7 @@ const peopleEdit = ref<boolean>(false);
                                 :film-id="filmData.id"/>
 
                 <div v-else-if="filmData.people.length > 0" class="flex flex-wrap gap-5 mt-5">
-                    <div v-for="person in filmData.people"
+                    <div v-for="person in filmData.people.slice(0, peopleDetails ? filmData.people?.length : 6)"
                          class="flex items-center gap-2.5 w-[250px]"
                          :key="person.id">
                         <div v-if="person.person?.photo"
@@ -75,6 +83,14 @@ const peopleEdit = ref<boolean>(false);
                             <p class="leading-4">{{ person.role_details }}</p>
                         </div>
                     </div>
+                </div>
+
+                <div v-if="!peopleEdit && filmData.people.length > 6" class="flex justify-center">
+                    <UButton :icon="peopleDetails ? 'i-heroicons-chevron-double-up' : 'i-heroicons-chevron-double-down'"
+                             color="gray"
+                             size="xl"
+                             :ui="{rounded: 'rounded-full'}"
+                             @click="peopleDetails = !peopleDetails"/>
                 </div>
 
                 <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
