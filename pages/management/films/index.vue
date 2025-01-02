@@ -149,7 +149,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
                     <UButton color="gray"
                              icon="i-heroicons-pencil-solid"
                              square
-                             @click="editRow = row"/>
+                             @click="editRow = {...row, cover: null}"/>
                 </UTooltip>
 
                 <UTooltip v-if="!row.is_mine"
