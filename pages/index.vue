@@ -78,7 +78,7 @@ const {data: films} = await filmRepo.list(`films`);
 
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                 <NuxtLink class="block"
-                          to="/management/films/films"
+                          :to="`/management/films/${film.id}`"
                           v-for="film in films?.data ?? []">
                     <img v-if="film.cover"
                          :src="fileUrl(film.cover)"
