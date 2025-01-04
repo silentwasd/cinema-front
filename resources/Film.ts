@@ -12,6 +12,7 @@ export default interface Film {
     is_mine?: boolean;
     has_rating?: boolean;
     can_edit?: boolean;
+    can_watch?: boolean;
     ratings?: Rating[];
     people?: FilmPersonResource[];
 }

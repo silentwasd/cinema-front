@@ -71,13 +71,15 @@ function close() {
                 </div>
 
                 <template #footer>
-                    <div class="flex items-center justify-end">
+                    <div class="flex items-center justify-end gap-2.5">
                         <UButton type="submit" :loading="saving" :disabled="readonly"
                                  class="dark:bg-fuchsia-300 dark:hover:bg-fuchsia-200">
                             Сохранить
                         </UButton>
 
-                        <UButton color="gray" class="ms-2.5"
+                        <slot name="footer" :state="state"/>
+
+                        <UButton color="gray"
                                  :disabled="saving" @click="close">
                             Отменить
                         </UButton>

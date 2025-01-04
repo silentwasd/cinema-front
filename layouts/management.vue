@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import ProfileRepository from "~/repos/management/ProfileRepository";
+import {UserRole} from "~/types/enums/UserRole";
+
 const token = useCookie('token');
 const color = useColorMode();
 
@@ -17,7 +20,10 @@ useHead({
     ]
 });
 
-const nav = [{
+const profileRepo     = new ProfileRepository();
+const {data: profile} = await profileRepo.show(`profile`);
+
+const nav = computed(() => [{
     label: 'Каталог',
     icon : 'i-heroicons-folder-open-20-solid',
     to   : '/management/films'
@@ -29,7 +35,12 @@ const nav = [{
     label: 'Люди',
     icon : 'i-heroicons-users-20-solid',
     to   : '/management/people'
-}];
+}, {
+    label  : 'Кинотеатр',
+    icon   : 'i-heroicons-light-bulb-solid',
+    to     : '/management/cinema',
+    visible: profile.value?.data.role == UserRole.Admin
+}].filter(item => !item.hasOwnProperty('visible') || item.visible));
 
 const rightNav = computed(() => [{
     icon : color.value == 'light' ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid',

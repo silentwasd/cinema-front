@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
     devtools: {enabled: true},
 
-    modules: ["@nuxt/ui", '@nuxtjs/google-fonts'],
+    modules: ["@nuxt/ui", '@nuxtjs/google-fonts', '@vueuse/nuxt', 'nuxt-time'],
 
     runtimeConfig: {
         public: {
