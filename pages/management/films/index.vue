@@ -5,6 +5,8 @@ import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import FilmRepository from "~/repos/FilmRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
+import type FilmPersonResource from "~/resources/FilmPersonResource";
+import {PersonRole} from "~/types/enums/PersonRole";
 
 definePageMeta({
     middleware: 'auth',
@@ -43,6 +45,14 @@ let columns = [
         key     : 'release_date',
         label   : 'Дата выхода',
         sortable: true
+    },
+    {
+        key  : 'directors',
+        label: 'Режиссеры'
+    },
+    {
+        key  : 'actors',
+        label: 'Актёры'
     },
     {
         key  : 'actions',
@@ -141,6 +151,26 @@ const filmWatcherRepo = new FilmWatcherRepository();
 
         <template #format-data="{row}">
             {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
+        </template>
+
+        <template #directors-data="{row}">
+            <div>
+                <div
+                    v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Director).slice(0, 2)"
+                    :key="item.id">
+                    <p class="leading-4">{{ item.person.name }}</p>
+                </div>
+            </div>
+        </template>
+
+        <template #actors-data="{row}">
+            <div>
+                <div
+                    v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Actor).slice(0, 2)"
+                    :key="item.id">
+                    <p class="leading-4">{{ item.person.name }}</p>
+                </div>
+            </div>
         </template>
 
         <template #actions-data="{row}">

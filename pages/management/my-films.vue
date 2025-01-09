@@ -4,7 +4,6 @@ import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
 import type Film from "~/resources/Film";
-import type FilmPersonResource from "~/resources/FilmPersonResource";
 
 definePageMeta({
     middleware: 'auth',
