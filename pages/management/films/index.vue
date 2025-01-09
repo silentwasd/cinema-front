@@ -7,20 +7,38 @@ import FilmRepository from "~/repos/FilmRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmPersonResource from "~/resources/FilmPersonResource";
 import {PersonRole} from "~/types/enums/PersonRole";
+import PersonRepository from "~/repos/PersonRepository";
 
 definePageMeta({
     middleware: 'auth',
     layout    : 'management'
 });
 
+const route = useRoute();
+
 const repo = new FilmRepository();
 
-const {name, page, perPage, sort, clearFilters} = useTabler('films');
+const format    = ref<FilmFormat | undefined>(route.query.format ? (route.query.format as FilmFormat) : undefined);
+const directors = ref<number[]>((((Array.isArray(route.query['directors[]']) ? route.query['directors[]'] : (route.query['directors[]'] ? [route.query['directors[]']] : [])) as string[]) ?? []).map(item => parseInt(item)));
+const actors    = ref<number[]>((((Array.isArray(route.query['actors[]']) ? route.query['actors[]'] : (route.query['actors[]'] ? [route.query['actors[]']] : [])) as string[]) ?? []).map(item => parseInt(item)));
+
+const {name, page, perPage, sort, clearFilters} = useTabler('films', () => ({
+    format   : format.value,
+    directors: directors.value,
+    actors   : actors.value
+}), () => {
+    format.value    = undefined;
+    directors.value = [];
+    actors.value    = [];
+});
 
 const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Film>>(() => ({
     name          : name.value,
     page          : page.value,
     per_page      : perPage.value,
+    format        : format.value,
+    directors     : directors.value,
+    actors        : actors.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction
 }));
@@ -48,7 +66,7 @@ let columns = [
     },
     {
         key  : 'directors',
-        label: 'Режиссеры'
+        label: 'Режиссёры'
     },
     {
         key  : 'actors',
@@ -126,6 +144,20 @@ const filmWatcherRepo = new FilmWatcherRepository();
             <UiTableSearch v-model="name"/>
             <UiTablePerPage v-model="perPage"/>
             <UiTableClearFilters @clear="clearFilters"/>
+        </template>
+
+        <template #selected>
+            <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Director)"
+                                  placeholder="Фильтр по режиссёрам"
+                                  multiple
+                                  v-model="directors"/>
+
+            <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Actor)"
+                                  placeholder="Фильтр по актёрам"
+                                  multiple
+                                  v-model="actors"/>
+
+            <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
         </template>
 
         <template #actions>

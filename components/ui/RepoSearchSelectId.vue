@@ -36,6 +36,7 @@ async function search(query: string) {
                  :placeholder="placeholder"
                  option-attribute="name"
                  value-attribute="id"
+                 clear-search-on-close
                  trailing>
         <template #option="{option}">
             <slot :option="option"></slot>
