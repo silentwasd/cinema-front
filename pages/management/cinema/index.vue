@@ -166,266 +166,271 @@ async function publish() {
 </script>
 
 <template>
-    <div class="flex gap-2.5 h-full">
-        <div class="w-1/4 h-full shrink-0">
-            <h1 class="text-xl font-semibold mb-2.5">Загрузки</h1>
-
-            <UButton color="gray"
-                     label="Добавить URL"
-                     icon="i-heroicons-plus"
-                     @click="addUrl = true"/>
-
-            <div class="flex flex-col gap-2.5 mt-2.5">
-                <div v-for="download in downloads?.data ?? []"
-                     :key="download.id"
-                     class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 flex flex-col gap-1 border dark:border-gray-700">
-                    <template v-if="download.name">
-                        <p class="font-semibold truncate">{{ download.name }}</p>
-                        <UProgress :value="download.progress"/>
-                        <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
-
-                        <div>
-                            <UButton v-if="download.status == DownloadStatus.Seeding"
-                                     icon="i-heroicons-link-20-solid"
-                                     color="gray"
-                                     label="Привязать к фильму"
-                                     size="xs"
-                                     @click="attachDownload = download"/>
-                        </div>
-                    </template>
-
-                    <template v-else>
-                        <div class="flex items-center gap-2.5">
-                            <UIcon name="i-heroicons-arrow-path" class="animate-spin text-xl"/>
-                            {{ download.hash }}
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-col w-1/4 h-full shrink-0">
-            <h1 class="text-xl font-semibold shrink-0">Фильмы</h1>
-
-            <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
-                <NuxtLink v-for="film in films?.data ?? []"
-                          class="flex gap-2.5 items-start bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700"
-                          :key="film.id"
-                          to="#"
-                          @click="selectFilm(film)">
-                    <img :src="fileUrl(film.cover)" class="w-10 h-10 object-cover rounded-md shrink-0"/>
-
-                    <div class="truncate">
-                        <p class="font-semibold truncate leading-5 text-lg">{{ film.name }}</p>
-                        <NuxtTime :datetime="film.release_date" class="text-sm"/>
-                        <p>
-                            <UBadge class="text-sm uppercase"
-                                    color="gray"
-                                    size="xs">
-                                {{ film.cinema_status }}
-                            </UBadge>
-                        </p>
-                    </div>
-                </NuxtLink>
-            </div>
-        </div>
-
-        <div v-if="selectedFilm" class="flex flex-col w-1/4 h-full shrink-0">
-            <h1 class="text-xl font-semibold shrink-0 truncate">Фильм "{{ selectedFilm.data.name }}"</h1>
-
-            <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
-                <UButton v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count"
-                         color="gray"
-                         icon="i-heroicons-play-solid"
-                         label="Посмотреть"
-                         @click="watch = true"/>
-
-                <UButton v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count && selectedFilm.data.cinema_status != FilmCinemaStatus.Published"
-                         color="gray"
-                         icon="i-heroicons-arrow-up-tray"
-                         label="Опубликовать"
-                         @click="publish"/>
-
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
-                    <h1 class="text-lg font-semibold leading-5">Видео</h1>
-
-                    <table class="w-full">
-                        <tbody>
-                        <tr>
-                            <td class="w-[100px]">Ширина</td>
-                            <td>{{ selectedFilm.info.video.width }}</td>
-                        </tr>
-                        <tr>
-                            <td>Высота</td>
-                            <td>{{ selectedFilm.info.video.height }}</td>
-                        </tr>
-                        <tr>
-                            <td>Битрейт</td>
-                            <td>{{ Math.round(selectedFilm.info.video.bitrate / 1000) }} KB/s</td>
-                        </tr>
-                        <tr>
-                            <td>HDR</td>
-                            <td>{{ selectedFilm.info.video.has_hdr ? 'да' : 'нет' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Время</td>
-                            <td>{{ Math.round(selectedFilm.info.video.duration / 60) }} мин</td>
-                        </tr>
-                        </tbody>
-                    </table>
+    <UiManagementMain>
+        <div class="flex gap-2.5 h-full">
+            <div class="flex flex-col w-1/4 h-full shrink-0">
+                <div>
+                    <h1 class="text-xl font-semibold mb-2.5">Загрузки</h1>
 
                     <UButton color="gray"
-                             label="Обработать"
-                             icon="i-heroicons-rocket-launch-solid"
-                             class="mt-1.5"
-                             @click="videoProcess = selectedFilm.info.video"/>
+                             label="Добавить URL"
+                             icon="i-heroicons-plus"
+                             @click="addUrl = true"/>
                 </div>
 
-                <div v-for="audio in selectedFilm.info.audio"
-                     class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
-                    <h1 class="text-lg font-semibold leading-5">Аудио #{{ audio.index }}</h1>
+                <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
+                    <div v-for="download in downloads?.data ?? []"
+                         :key="download.id"
+                         class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 flex flex-col gap-1 border dark:border-gray-700">
+                        <template v-if="download.name">
+                            <p class="font-semibold truncate">{{ download.name }}</p>
+                            <UProgress :value="download.progress"/>
+                            <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
 
-                    <table class="w-full">
-                        <tbody>
-                        <tr v-if="audio.title">
-                            <td>Заголовок</td>
-                            <td>{{ audio.title }}</td>
-                        </tr>
+                            <div>
+                                <UButton v-if="download.status == DownloadStatus.Seeding"
+                                         icon="i-heroicons-link-20-solid"
+                                         color="gray"
+                                         label="Привязать к фильму"
+                                         size="xs"
+                                         @click="attachDownload = download"/>
+                            </div>
+                        </template>
 
-                        <tr v-if="audio.language">
-                            <td>Язык</td>
-                            <td>{{ audio.language }}</td>
-                        </tr>
+                        <template v-else>
+                            <div class="flex items-center gap-2.5">
+                                <UIcon name="i-heroicons-arrow-path" class="animate-spin text-xl"/>
+                                {{ download.hash }}
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
 
-                        <tr>
-                            <td class="w-[100px]">Битрейт</td>
-                            <td>{{ Math.round(audio.bitrate / 1000) }} KB/s</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="flex flex-col w-1/4 h-full shrink-0">
+                <h1 class="text-xl font-semibold shrink-0">Фильмы</h1>
 
-                    <UButton color="gray"
-                             label="Обработать"
-                             icon="i-heroicons-rocket-launch-solid"
-                             class="mt-1.5"
-                             @click="audioProcess = audio"/>
+                <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
+                    <NuxtLink v-for="film in films?.data ?? []"
+                              class="flex gap-2.5 items-start bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700"
+                              :key="film.id"
+                              to="#"
+                              @click="selectFilm(film)">
+                        <img :src="fileUrl(film.cover)" class="w-10 h-10 object-cover rounded-md shrink-0"/>
+
+                        <div class="truncate">
+                            <p class="font-semibold truncate leading-5 text-lg">{{ film.name }}</p>
+                            <NuxtTime :datetime="film.release_date" class="text-sm"/>
+                            <p>
+                                <UBadge class="text-sm uppercase"
+                                        color="gray"
+                                        size="xs">
+                                    {{ film.cinema_status }}
+                                </UBadge>
+                            </p>
+                        </div>
+                    </NuxtLink>
+                </div>
+            </div>
+
+            <div v-if="selectedFilm" class="flex flex-col w-1/4 h-full shrink-0">
+                <h1 class="text-xl font-semibold shrink-0 truncate">Фильм "{{ selectedFilm.data.name }}"</h1>
+
+                <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
+                    <UButton v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count"
+                             color="gray"
+                             icon="i-heroicons-play-solid"
+                             label="Посмотреть"
+                             @click="watch = true"/>
+
+                    <UButton
+                        v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count && selectedFilm.data.cinema_status != FilmCinemaStatus.Published"
+                        color="gray"
+                        icon="i-heroicons-arrow-up-tray"
+                        label="Опубликовать"
+                        @click="publish"/>
+
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
+                        <h1 class="text-lg font-semibold leading-5">Видео</h1>
+
+                        <table class="w-full">
+                            <tbody>
+                            <tr>
+                                <td class="w-[100px]">Ширина</td>
+                                <td>{{ selectedFilm.info.video.width }}</td>
+                            </tr>
+                            <tr>
+                                <td>Высота</td>
+                                <td>{{ selectedFilm.info.video.height }}</td>
+                            </tr>
+                            <tr>
+                                <td>Битрейт</td>
+                                <td>{{ Math.round(selectedFilm.info.video.bitrate / 1000) }} KB/s</td>
+                            </tr>
+                            <tr>
+                                <td>HDR</td>
+                                <td>{{ selectedFilm.info.video.has_hdr ? 'да' : 'нет' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Время</td>
+                                <td>{{ Math.round(selectedFilm.info.video.duration / 60) }} мин</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <UButton color="gray"
+                                 label="Обработать"
+                                 icon="i-heroicons-rocket-launch-solid"
+                                 class="mt-1.5"
+                                 @click="videoProcess = selectedFilm.info.video"/>
+                    </div>
+
+                    <div v-for="audio in selectedFilm.info.audio"
+                         class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
+                        <h1 class="text-lg font-semibold leading-5">Аудио #{{ audio.index }}</h1>
+
+                        <table class="w-full">
+                            <tbody>
+                            <tr v-if="audio.title">
+                                <td>Заголовок</td>
+                                <td>{{ audio.title }}</td>
+                            </tr>
+
+                            <tr v-if="audio.language">
+                                <td>Язык</td>
+                                <td>{{ audio.language }}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-[100px]">Битрейт</td>
+                                <td>{{ Math.round(audio.bitrate / 1000) }} KB/s</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <UButton color="gray"
+                                 label="Обработать"
+                                 icon="i-heroicons-rocket-launch-solid"
+                                 class="mt-1.5"
+                                 @click="audioProcess = audio"/>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="selectedFilm" class="flex flex-col w-1/4 h-full shrink-0">
+                <h1 class="text-xl font-semibold shrink-0 truncate">Медиа</h1>
+
+                <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
+                    <div v-for="video in videoVariants"
+                         :key="video.id"
+                         class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
+                        <h1 class="text-lg font-semibold leading-5">Видео #{{ video.id }}</h1>
+
+                        <table class="w-full">
+                            <tbody>
+                            <tr>
+                                <td class="w-[130px]">Заголовок</td>
+                                <td>{{ video.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="w-[100px]">Ширина</td>
+                                <td>{{ video.width }}</td>
+                            </tr>
+                            <tr>
+                                <td>Высота</td>
+                                <td>{{ video.height }}</td>
+                            </tr>
+                            <tr>
+                                <td>Битрейт</td>
+                                <td>{{ Math.round(video.bitrate / 1000) }} KB/s</td>
+                            </tr>
+                            <tr>
+                                <td>CRF</td>
+                                <td>{{ video.crf }}</td>
+                            </tr>
+                            <tr>
+                                <td>Конв. в SDR</td>
+                                <td>{{ video.to_sdr ? 'да' : 'нет' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Статус</td>
+                                <td>
+                                    <UBadge color="gray">{{ video.status.toUpperCase() }}</UBadge>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div v-if="video.path && video.status == FilmVideoVariantStatus.Completed"
+                             class="mt-1.5">
+                            <UiHlsVideo :src="fileUrl(video.path)" class="aspect-[16/9] bg-gray-950"/>
+                        </div>
+
+                        <UButton v-if="video.status == FilmVideoVariantStatus.Failed"
+                                 color="gray"
+                                 label="Запустить снова"
+                                 class="mt-1.5"
+                                 icon="i-heroicons-arrow-uturn-left"
+                                 @click="(new FilmVideoVariantRepository(selectedFilm.data.id)).update({id: video.id}).then(() => loadVideoVariants())"/>
+                    </div>
+
+                    <div v-for="audio in audioVariants"
+                         :key="audio.id"
+                         class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
+                        <h1 class="text-lg font-semibold leading-5">Аудио #{{ audio.id }}</h1>
+
+                        <table class="w-full">
+                            <tbody>
+                            <tr>
+                                <td class="w-[130px]">Заголовок</td>
+                                <td>{{ audio.name }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Язык</td>
+                                <td>{{ audio.language }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Битрейт</td>
+                                <td>{{ Math.round(audio.bitrate / 1000) }} KB/s</td>
+                            </tr>
+
+                            <tr>
+                                <td>Поток #</td>
+                                <td>{{ audio.index }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Статус</td>
+                                <td>
+                                    <UBadge color="gray">{{ audio.status.toUpperCase() }}</UBadge>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>По умолчанию</td>
+                                <td>{{ audio.is_default ? 'да' : 'нет' }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div v-if="audio.path && audio.status == FilmAudioVariantStatus.Completed"
+                             class="mt-1.5">
+                            <UiHlsAudio :src="fileUrl(audio.path)"/>
+                        </div>
+
+                        <UButton v-if="audio.status == FilmAudioVariantStatus.Failed"
+                                 color="gray"
+                                 label="Запустить снова"
+                                 class="mt-1.5"
+                                 icon="i-heroicons-arrow-uturn-left"
+                                 @click="(new FilmAudioVariantRepository(selectedFilm.data.id)).update({id: audio.id}).then(() => loadAudioVariants())"/>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div v-if="selectedFilm" class="flex flex-col w-1/4 h-full shrink-0">
-            <h1 class="text-xl font-semibold shrink-0 truncate">Медиа</h1>
-
-            <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
-                <div v-for="video in videoVariants"
-                     :key="video.id"
-                     class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
-                    <h1 class="text-lg font-semibold leading-5">Видео #{{ video.id }}</h1>
-
-                    <table class="w-full">
-                        <tbody>
-                        <tr>
-                            <td class="w-[130px]">Заголовок</td>
-                            <td>{{ video.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="w-[100px]">Ширина</td>
-                            <td>{{ video.width }}</td>
-                        </tr>
-                        <tr>
-                            <td>Высота</td>
-                            <td>{{ video.height }}</td>
-                        </tr>
-                        <tr>
-                            <td>Битрейт</td>
-                            <td>{{ Math.round(video.bitrate / 1000) }} KB/s</td>
-                        </tr>
-                        <tr>
-                            <td>CRF</td>
-                            <td>{{ video.crf }}</td>
-                        </tr>
-                        <tr>
-                            <td>Конв. в SDR</td>
-                            <td>{{ video.to_sdr ? 'да' : 'нет' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Статус</td>
-                            <td>
-                                <UBadge color="gray">{{ video.status.toUpperCase() }}</UBadge>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div v-if="video.path && video.status == FilmVideoVariantStatus.Completed"
-                         class="mt-1.5">
-                        <UiHlsVideo :src="fileUrl(video.path)" class="aspect-[16/9] bg-gray-950"/>
-                    </div>
-
-                    <UButton v-if="video.status == FilmVideoVariantStatus.Failed"
-                             color="gray"
-                             label="Запустить снова"
-                             class="mt-1.5"
-                             icon="i-heroicons-arrow-uturn-left"
-                             @click="(new FilmVideoVariantRepository(selectedFilm.data.id)).update({id: video.id}).then(() => loadVideoVariants())"/>
-                </div>
-
-                <div v-for="audio in audioVariants"
-                     :key="audio.id"
-                     class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700">
-                    <h1 class="text-lg font-semibold leading-5">Аудио #{{ audio.id }}</h1>
-
-                    <table class="w-full">
-                        <tbody>
-                        <tr>
-                            <td class="w-[130px]">Заголовок</td>
-                            <td>{{ audio.name }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>Язык</td>
-                            <td>{{ audio.language }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>Битрейт</td>
-                            <td>{{ Math.round(audio.bitrate / 1000) }} KB/s</td>
-                        </tr>
-
-                        <tr>
-                            <td>Поток #</td>
-                            <td>{{ audio.index }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>Статус</td>
-                            <td>
-                                <UBadge color="gray">{{ audio.status.toUpperCase() }}</UBadge>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>По умолчанию</td>
-                            <td>{{ audio.is_default ? 'да' : 'нет' }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div v-if="audio.path && audio.status == FilmAudioVariantStatus.Completed"
-                         class="mt-1.5">
-                        <UiHlsAudio :src="fileUrl(audio.path)"/>
-                    </div>
-
-                    <UButton v-if="audio.status == FilmAudioVariantStatus.Failed"
-                             color="gray"
-                             label="Запустить снова"
-                             class="mt-1.5"
-                             icon="i-heroicons-arrow-uturn-left"
-                             @click="(new FilmAudioVariantRepository(selectedFilm.data.id)).update({id: audio.id}).then(() => loadAudioVariants())"/>
-                </div>
-            </div>
-        </div>
-    </div>
+    </UiManagementMain>
 
     <ModalInnerState v-model="addUrl"
                      :save="(state: any) => downloadRepo.store(state).then(() => refreshDownloads())">

@@ -76,58 +76,60 @@ async function save(state: any) {
 </script>
 
 <template>
-    <UiSelectTable :columns="columns"
-                   :rows="people?.data ?? []"
-                   :page-count="people?.meta.per_page"
-                   :total="people?.meta.total"
-                   :loading="status == 'pending'"
-                   class="grow h-0"
-                   v-model:page="page"
-                   v-model:sort="sort">
-        <template #filters>
-            <UiTableSearch v-model="name"/>
-            <UiTablePerPage v-model="perPage"/>
-            <UiTableClearFilters @clear="clearFilters"/>
-        </template>
+    <UiManagementMain>
+        <UiSelectTable :columns="columns"
+                       :rows="people?.data ?? []"
+                       :page-count="people?.meta.per_page"
+                       :total="people?.meta.total"
+                       :loading="status == 'pending'"
+                       class="grow h-0"
+                       v-model:page="page"
+                       v-model:sort="sort">
+            <template #filters>
+                <UiTableSearch v-model="name"/>
+                <UiTablePerPage v-model="perPage"/>
+                <UiTableClearFilters @clear="clearFilters"/>
+            </template>
 
-        <template #actions>
-            <UButton icon="i-heroicons-plus"
-                     color="gray"
-                     @click="editRow = makeResource()">
-                Создать
-            </UButton>
-        </template>
+            <template #actions>
+                <UButton icon="i-heroicons-plus"
+                         color="gray"
+                         @click="editRow = makeResource()">
+                    Создать
+                </UButton>
+            </template>
 
-        <template #name-data="{row}">
-            <div class="flex items-center gap-2.5">
-                <div v-if="row.photo"
-                     class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
-                     :style="`background-image: url(${fileUrl(row.photo)})`"></div>
+            <template #name-data="{row}">
+                <div class="flex items-center gap-2.5">
+                    <div v-if="row.photo"
+                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
+                         :style="`background-image: url(${fileUrl(row.photo)})`"></div>
 
-                <UIcon v-else name="i-heroicons-user-circle" class="w-8 h-8"/>
+                    <UIcon v-else name="i-heroicons-user-circle" class="w-8 h-8"/>
 
-                <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
-            </div>
-        </template>
+                    <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
+                </div>
+            </template>
 
-        <template #actions-data="{row}">
-            <div v-if="row.can_edit" class="flex items-center justify-end gap-2.5">
-                <UTooltip text="Изменить">
-                    <UButton color="gray"
-                             icon="i-heroicons-pencil-solid"
-                             square
-                             @click="editRow = row"/>
-                </UTooltip>
+            <template #actions-data="{row}">
+                <div v-if="row.can_edit" class="flex items-center justify-end gap-2.5">
+                    <UTooltip text="Изменить">
+                        <UButton color="gray"
+                                 icon="i-heroicons-pencil-solid"
+                                 square
+                                 @click="editRow = row"/>
+                    </UTooltip>
 
-                <UTooltip text="Удалить">
-                    <UButton color="gray"
-                             icon="i-heroicons-trash-solid"
-                             :loading="removing[row.id] ?? false"
-                             @click="remove(row)"/>
-                </UTooltip>
-            </div>
-        </template>
-    </UiSelectTable>
+                    <UTooltip text="Удалить">
+                        <UButton color="gray"
+                                 icon="i-heroicons-trash-solid"
+                                 :loading="removing[row.id] ?? false"
+                                 @click="remove(row)"/>
+                    </UTooltip>
+                </div>
+            </template>
+        </UiSelectTable>
+    </UiManagementMain>
 
     <ModalEditModel v-model="editRow"
                     :readonly="!(editRow?.can_edit ?? true)"

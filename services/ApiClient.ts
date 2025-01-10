@@ -18,7 +18,7 @@ export default class ApiClient {
 
     public get<Type>(request: string): Promise<Type> {
         const config = useRuntimeConfig();
-        const token  = useCookie('token');
+        const token  = useToken();
 
         const headers: any = {};
 

@@ -2,7 +2,7 @@
 import ApiClient from "~/services/ApiClient";
 
 definePageMeta({
-    layout    : 'auth',
+    layout    : 'management',
     middleware: 'auth'
 });
 
@@ -12,7 +12,7 @@ const state = ref({
 });
 
 const loading = ref<boolean>(false);
-const token   = useCookie<string>('token');
+const token   = useToken();
 const toast   = useToast();
 
 async function submit() {
@@ -39,40 +39,44 @@ async function submit() {
 </script>
 
 <template>
-    <UForm :state="state" @submit="submit">
-        <div class="flex flex-col gap-5 border dark:border-gray-800 p-5 rounded-md shadow-xl w-[300px]">
-            <UFormGroup label="E-mail">
-                <UInput type="email"
-                        leading-icon="i-heroicons-at-symbol"
-                        placeholder="example@example.com"
-                        size="lg"
-                        v-model="state.email"/>
-            </UFormGroup>
+    <UMain>
+        <UContainer class="flex justify-center pt-5 lg:pt-10">
+            <UForm :state="state" @submit="submit">
+                <div class="flex flex-col gap-5 border dark:border-gray-800 p-5 rounded-md shadow-xl w-[300px]">
+                    <UFormGroup label="E-mail">
+                        <UInput type="email"
+                                leading-icon="i-heroicons-at-symbol"
+                                placeholder="example@example.com"
+                                size="lg"
+                                v-model="state.email"/>
+                    </UFormGroup>
 
-            <UFormGroup label="Пароль">
-                <UInput type="password"
-                        leading-icon="i-heroicons-key"
-                        placeholder="••••••••"
-                        size="lg"
-                        v-model="state.password"/>
-            </UFormGroup>
+                    <UFormGroup label="Пароль">
+                        <UInput type="password"
+                                leading-icon="i-heroicons-key"
+                                placeholder="••••••••"
+                                size="lg"
+                                v-model="state.password"/>
+                    </UFormGroup>
 
-            <div class="flex flex-col gap-2.5">
-                <UButton label="Продолжить"
-                         type="submit"
-                         size="lg"
-                         class="w-full"
-                         :loading="loading"/>
+                    <div class="flex flex-col gap-2.5">
+                        <UButton label="Продолжить"
+                                 type="submit"
+                                 size="lg"
+                                 class="w-full"
+                                 :loading="loading"/>
 
-                <UButton label="Зарегистрироваться"
-                         type="submit"
-                         size="lg"
-                         color="gray"
-                         class="w-full"
-                         to="/register"/>
-            </div>
-        </div>
-    </UForm>
+                        <UButton label="Зарегистрироваться"
+                                 type="submit"
+                                 size="lg"
+                                 color="gray"
+                                 class="w-full"
+                                 to="/register"/>
+                    </div>
+                </div>
+            </UForm>
+        </UContainer>
+    </UMain>
 </template>
 
 <style scoped>

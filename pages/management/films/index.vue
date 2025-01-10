@@ -132,120 +132,122 @@ const filmWatcherRepo = new FilmWatcherRepository();
 </script>
 
 <template>
-    <UiSelectTable :columns="columns"
-                   :rows="rows?.data ?? []"
-                   :page-count="rows?.meta.per_page"
-                   :total="rows?.meta.total"
-                   :loading="status == 'pending'"
-                   class="grow h-0"
-                   v-model:page="page"
-                   v-model:sort="sort">
-        <template #filters>
-            <UiTableSearch v-model="name"/>
-            <UiTablePerPage v-model="perPage"/>
-            <UiTableClearFilters @clear="clearFilters"/>
-        </template>
+    <UiManagementMain>
+        <UiSelectTable :columns="columns"
+                       :rows="rows?.data ?? []"
+                       :page-count="rows?.meta.per_page"
+                       :total="rows?.meta.total"
+                       :loading="status == 'pending'"
+                       class="grow h-0"
+                       v-model:page="page"
+                       v-model:sort="sort">
+            <template #filters>
+                <UiTableSearch v-model="name"/>
+                <UiTablePerPage v-model="perPage"/>
+                <UiTableClearFilters @clear="clearFilters"/>
+            </template>
 
-        <template #selected>
-            <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Director)"
-                                  placeholder="Фильтр по режиссёрам"
-                                  multiple
-                                  v-model="directors"/>
+            <template #selected>
+                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Director)"
+                                      placeholder="Фильтр по режиссёрам"
+                                      multiple
+                                      v-model="directors"/>
 
-            <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Actor)"
-                                  placeholder="Фильтр по актёрам"
-                                  multiple
-                                  v-model="actors"/>
+                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Actor)"
+                                      placeholder="Фильтр по актёрам"
+                                      multiple
+                                      v-model="actors"/>
 
-            <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
-        </template>
+                <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
+            </template>
 
-        <template #actions>
-            <UButton icon="i-heroicons-plus"
-                     color="gray"
-                     @click="editRow = makeResource()">
-                Создать
-            </UButton>
-        </template>
+            <template #actions>
+                <UButton icon="i-heroicons-plus"
+                         color="gray"
+                         @click="editRow = makeResource()">
+                    Создать
+                </UButton>
+            </template>
 
-        <template #name-data="{row}">
-            <NuxtLink class="flex items-center gap-2.5 hover:underline"
-                      :to="`/management/films/${row.id}`">
-                <div v-if="row.cover"
-                     class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
-                     :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>
+            <template #name-data="{row}">
+                <NuxtLink class="flex items-center gap-2.5 hover:underline"
+                          :to="`/management/films/${row.id}`">
+                    <div v-if="row.cover"
+                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
+                         :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>
 
-                <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
+                    <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
-                <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
-            </NuxtLink>
-        </template>
+                    <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
+                </NuxtLink>
+            </template>
 
-        <template #format-data="{row}">
-            {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
-        </template>
+            <template #format-data="{row}">
+                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
+            </template>
 
-        <template #directors-data="{row}">
-            <div>
-                <div
-                    v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Director).slice(0, 2)"
-                    :key="item.id">
-                    <p class="leading-4">{{ item.person.name }}</p>
+            <template #directors-data="{row}">
+                <div>
+                    <div
+                        v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Director).slice(0, 2)"
+                        :key="item.id">
+                        <p class="leading-4">{{ item.person.name }}</p>
+                    </div>
                 </div>
-            </div>
-        </template>
+            </template>
 
-        <template #actors-data="{row}">
-            <div>
-                <div
-                    v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Actor).slice(0, 2)"
-                    :key="item.id">
-                    <p class="leading-4">{{ item.person.name }}</p>
+            <template #actors-data="{row}">
+                <div>
+                    <div
+                        v-for="item in row.people.filter((item: FilmPersonResource) => item.role == PersonRole.Actor).slice(0, 2)"
+                        :key="item.id">
+                        <p class="leading-4">{{ item.person.name }}</p>
+                    </div>
                 </div>
-            </div>
-        </template>
+            </template>
 
-        <template #actions-data="{row}">
-            <div class="flex gap-2.5 justify-end">
-                <UTooltip v-if="row.can_watch" text="Смотреть">
-                    <UButton color="gray"
-                             icon="i-heroicons-play-solid"
-                             square
-                             :to="`/cinema/${row.id}`"/>
-                </UTooltip>
+            <template #actions-data="{row}">
+                <div class="flex gap-2.5 justify-end">
+                    <UTooltip v-if="row.can_watch" text="Смотреть">
+                        <UButton color="gray"
+                                 icon="i-heroicons-play-solid"
+                                 square
+                                 :to="`/cinema/${row.id}`"/>
+                    </UTooltip>
 
-                <UTooltip v-if="row.can_edit" text="Изменить">
-                    <UButton color="gray"
-                             icon="i-heroicons-pencil-solid"
-                             square
-                             @click="editRow = {...row, cover: null}"/>
-                </UTooltip>
+                    <UTooltip v-if="row.can_edit" text="Изменить">
+                        <UButton color="gray"
+                                 icon="i-heroicons-pencil-solid"
+                                 square
+                                 @click="editRow = {...row, cover: null}"/>
+                    </UTooltip>
 
-                <UTooltip v-if="!row.is_mine"
-                          text="В мои фильмы">
-                    <UButton color="gray"
-                             icon="i-heroicons-arrow-right"
-                             square
-                             @click="addRow = row"/>
-                </UTooltip>
+                    <UTooltip v-if="!row.is_mine"
+                              text="В мои фильмы">
+                        <UButton color="gray"
+                                 icon="i-heroicons-arrow-right"
+                                 square
+                                 @click="addRow = row"/>
+                    </UTooltip>
 
-                <UTooltip v-else
-                          text="Мой фильм">
-                    <UButton color="gray"
-                             disabled
-                             icon="i-heroicons-check-circle-16-solid"
-                             square/>
-                </UTooltip>
+                    <UTooltip v-else
+                              text="Мой фильм">
+                        <UButton color="gray"
+                                 disabled
+                                 icon="i-heroicons-check-circle-16-solid"
+                                 square/>
+                    </UTooltip>
 
-                <UTooltip v-if="row.can_edit" text="Удалить">
-                    <UButton color="gray"
-                             icon="i-heroicons-trash-solid"
-                             square
-                             @click="removeRow = row"/>
-                </UTooltip>
-            </div>
-        </template>
-    </UiSelectTable>
+                    <UTooltip v-if="row.can_edit" text="Удалить">
+                        <UButton color="gray"
+                                 icon="i-heroicons-trash-solid"
+                                 square
+                                 @click="removeRow = row"/>
+                    </UTooltip>
+                </div>
+            </template>
+        </UiSelectTable>
+    </UiManagementMain>
 
     <ModalRemoveConfirm :opened="!!removeRow"
                         @confirm="remove"
@@ -298,8 +300,6 @@ const filmWatcherRepo = new FilmWatcherRepository();
             </UFormGroup>
         </template>
     </ModalEditModel>
-
-    <ModalRatings v-model="ratingRow"/>
 </template>
 
 <style scoped>

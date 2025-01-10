@@ -25,7 +25,7 @@ defineEmits<{
         </div>
 
         <div v-if="$slots.actions" class="flex gap-2.5 justify-between p-2.5 border-b dark:border-b-gray-700 shrink-0">
-            <div class="flex gap-2.5 items-center">
+            <div class="hidden lg:flex gap-2.5 items-center">
                 <slot v-if="(selected && selected.length > 0) || !selected" name="selected"></slot>
             </div>
             <div class="flex gap-2.5 items-center">

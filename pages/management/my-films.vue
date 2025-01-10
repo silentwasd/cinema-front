@@ -83,75 +83,77 @@ async function remove(watcher: FilmWatcher) {
 </script>
 
 <template>
-    <UiSelectTable :columns="columns"
-                   :rows="filmWatchers?.data ?? []"
-                   :page-count="filmWatchers?.meta.per_page"
-                   :total="filmWatchers?.meta.total"
-                   :loading="status == 'pending'"
-                   class="grow h-0"
-                   v-model:page="page"
-                   v-model:sort="sort">
-        <template #filters>
-            <UiTableSearch v-model="name"/>
-            <UiTablePerPage v-model="perPage"/>
-            <UiTableWatcherStatus placeholder="Статус просмотра"
-                                  v-model="watchStatus"/>
-            <UiTableClearFilters @clear="clearFilters"/>
-        </template>
+    <UiManagementMain>
+        <UiSelectTable :columns="columns"
+                       :rows="filmWatchers?.data ?? []"
+                       :page-count="filmWatchers?.meta.per_page"
+                       :total="filmWatchers?.meta.total"
+                       :loading="status == 'pending'"
+                       class="grow h-0"
+                       v-model:page="page"
+                       v-model:sort="sort">
+            <template #filters>
+                <UiTableSearch v-model="name"/>
+                <UiTablePerPage v-model="perPage"/>
+                <UiTableWatcherStatus placeholder="Статус просмотра"
+                                      v-model="watchStatus"/>
+                <UiTableClearFilters @clear="clearFilters"/>
+            </template>
 
-        <template #film.name-data="{row}">
-            <NuxtLink class="flex items-center gap-2.5 hover:underline underline-offset-2"
-                      :to="`/management/films/${row.film.id}`">
-                <div v-if="row.film.cover"
-                     class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
-                     :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
+            <template #film.name-data="{row}">
+                <NuxtLink class="flex items-center gap-2.5 hover:underline underline-offset-2"
+                          :to="`/management/films/${row.film.id}`">
+                    <div v-if="row.film.cover"
+                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
+                         :style="`background-image: url(${fileUrl(row.film.cover)})`"></div>
 
-                <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
+                    <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
-                <div>
-                    <p class="font-semibold leading-4">
-                        {{ row.film.name.length > 40 ? row.film.name.slice(0, 40) + '...' : row.film.name }}
-                    </p>
+                    <div>
+                        <p class="font-semibold leading-4">
+                            {{ row.film.name.length > 40 ? row.film.name.slice(0, 40) + '...' : row.film.name }}
+                        </p>
 
-                    <p v-if="row.film.people.length > 0" class="text-xs">
-                        <UiPeopleShortText :people="row.film.people"/>
-                    </p>
+                        <p v-if="row.film.people.length > 0" class="text-xs">
+                            <UiPeopleShortText :people="row.film.people"/>
+                        </p>
+                    </div>
+                </NuxtLink>
+            </template>
+
+            <template #film.format-data="{row}">
+                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
+            </template>
+
+            <template #status-data="{row}">
+                <UiWatcherStatusUpdate :watcher="row"/>
+            </template>
+
+            <template #actions-data="{row}">
+                <div class="flex items-center justify-end gap-2.5">
+                    <UTooltip v-if="row.film.can_watch" text="Смотреть">
+                        <UButton color="gray"
+                                 icon="i-heroicons-play-solid"
+                                 square
+                                 :to="`/cinema/${row.film.id}`"/>
+                    </UTooltip>
+
+                    <UTooltip text="Оценки">
+                        <UButton color="gray"
+                                 :icon="row.film.has_rating ? `i-heroicons-star-solid` : `i-heroicons-star`"
+                                 @click="ratingRow = row.film"/>
+                    </UTooltip>
+
+                    <UTooltip text="Удалить">
+                        <UButton color="gray"
+                                 icon="i-heroicons-trash-solid"
+                                 :loading="removing[row.id] ?? false"
+                                 @click="remove(row)"/>
+                    </UTooltip>
                 </div>
-            </NuxtLink>
-        </template>
-
-        <template #film.format-data="{row}">
-            {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
-        </template>
-
-        <template #status-data="{row}">
-            <UiWatcherStatusUpdate :watcher="row"/>
-        </template>
-
-        <template #actions-data="{row}">
-            <div class="flex items-center justify-end gap-2.5">
-                <UTooltip v-if="row.film.can_watch" text="Смотреть">
-                    <UButton color="gray"
-                             icon="i-heroicons-play-solid"
-                             square
-                             :to="`/cinema/${row.film.id}`"/>
-                </UTooltip>
-
-                <UTooltip text="Оценки">
-                    <UButton color="gray"
-                             :icon="row.film.has_rating ? `i-heroicons-star-solid` : `i-heroicons-star`"
-                             @click="ratingRow = row.film"/>
-                </UTooltip>
-
-                <UTooltip text="Удалить">
-                    <UButton color="gray"
-                             icon="i-heroicons-trash-solid"
-                             :loading="removing[row.id] ?? false"
-                             @click="remove(row)"/>
-                </UTooltip>
-            </div>
-        </template>
-    </UiSelectTable>
+            </template>
+        </UiSelectTable>
+    </UiManagementMain>
 
     <ModalRatings v-model="ratingRow" @updated="refresh"/>
 </template>

@@ -2,8 +2,7 @@
 import ProfileRepository from "~/repos/management/ProfileRepository";
 import {UserRole} from "~/types/enums/UserRole";
 
-const token = useCookie('token');
-const color = useColorMode();
+const token = useToken();
 
 useHead({
     link: [
@@ -20,65 +19,76 @@ useHead({
     ]
 });
 
-const profileRepo     = new ProfileRepository();
-const {data: profile} = await profileRepo.show(`profile`);
+const {state: profile, logout} = useProfile();
 
 const nav = computed(() => [{
-    label: 'Каталог',
-    icon : 'i-heroicons-folder-open-20-solid',
-    to   : '/management/films'
+    label  : 'Каталог',
+    icon   : 'i-heroicons-folder-open-20-solid',
+    to     : '/management/films',
+    visible: profile.value
 }, {
-    label: 'Мои фильмы',
-    icon : 'i-heroicons-film-16-solid',
-    to   : '/management/my-films'
+    label  : 'Мои фильмы',
+    icon   : 'i-heroicons-film-16-solid',
+    to     : '/management/my-films',
+    visible: profile.value
 }, {
-    label: 'Люди',
-    icon : 'i-heroicons-users-20-solid',
-    to   : '/management/people'
+    label  : 'Люди',
+    icon   : 'i-heroicons-users-20-solid',
+    to     : '/management/people',
+    visible: profile.value
 }, {
-    label  : 'Кинотеатр',
+    label  : 'Производство',
     icon   : 'i-heroicons-light-bulb-solid',
     to     : '/management/cinema',
-    visible: profile.value?.data.role == UserRole.Admin
+    visible: profile.value?.role == UserRole.Admin
 }].filter(item => !item.hasOwnProperty('visible') || item.visible));
-
-const rightNav = computed(() => [{
-    icon : color.value == 'light' ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid',
-    click: () => {
-        color.preference = color.value == 'light' ? 'dark' : 'light';
-    }
-}, {
-    label: 'Выход',
-    icon : 'i-heroicons-arrow-right-on-rectangle-20-solid',
-    click: () => {
-        token.value = '';
-        navigateTo('/login');
-    }
-}]);
 </script>
 
 <template>
-    <UContainer class="py-2.5 h-dvh">
-        <Head>
-            <title>ВКинопоиск</title>
-        </Head>
+    <Head>
+        <title>ВКинопоиск</title>
+    </Head>
 
-        <div class="flex flex-col gap-2.5 h-full">
-            <div class="shrink-0">
-                <div class="flex overflow-auto md:overflow-hidden">
-                    <UHorizontalNavigation :links="nav"
-                                           class="w-auto md:w-full"/>
-
-                    <LazyClientOnly>
-                        <UHorizontalNavigation :links="rightNav"
-                                               class="md:justify-end"/>
-                    </LazyClientOnly>
+    <div>
+        <UHeader :links="nav">
+            <template #logo>
+                <div class="flex items-center gap-2.5">
+                    <UIcon name="i-heroicons-film" class="text-3xl shrink-0"/>
+                    <h1 class="grow font-roboto font-black">ВКинопоиск</h1>
                 </div>
+            </template>
 
-                <UDivider/>
-            </div>
+            <template #right>
+                <UColorModeButton/>
 
-            <slot/>
-        </div>
-    </UContainer>
+                <UButton v-if="profile"
+                         icon="i-heroicons-arrow-right-start-on-rectangle-20-solid"
+                         variant="link"
+                         color="gray"
+                         @click="logout"/>
+
+                <UButton v-else
+                         icon="i-heroicons-arrow-right-end-on-rectangle-20-solid"
+                         variant="link"
+                         color="gray"
+                         to="/login"/>
+            </template>
+        </UHeader>
+
+        <slot/>
+
+        <UFooter class="bg-gray-200 dark:bg-gray-800">
+            <template #left>
+                <p class="font-roboto text-sm">Сервис не имеет никакого отношения к Кинопоиску!</p>
+            </template>
+
+            <template #right>
+                <UButton icon="i-simple-icons-telegram"
+                         color="gray"
+                         variant="ghost"
+                         to="https://t.me/vkinopoiskru"
+                         target="_blank"/>
+            </template>
+        </UFooter>
+    </div>
 </template>
