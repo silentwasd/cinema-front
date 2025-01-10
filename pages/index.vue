@@ -36,7 +36,7 @@ const {data: films} = await filmRepo.list(`films`);
                             и ставь собственные оценки
                         </h3>
 
-                        <UButton label="Начать"
+                        <UButton label="Присоединиться"
                                  size="xl"
                                  color="gray"
                                  class="md:text-xl"
@@ -47,7 +47,7 @@ const {data: films} = await filmRepo.list(`films`);
             </div>
 
             <UContainer class="py-5 md:py-10">
-                <h3 class="font-bold text-2xl mb-5">А ты уже посмотрел?</h3>
+                <h3 class="font-bold text-2xl mb-5">Фильмы в базе</h3>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     <NuxtLink class="block"
@@ -70,6 +70,25 @@ const {data: films} = await filmRepo.list(`films`);
                     </NuxtLink>
                 </div>
             </UContainer>
+
+            <div class="h-[60dvh] bg-center bg-cover"
+                 style="background-image: url('/img/cassettes.png');">
+                <div
+                    class="bg-gradient-to-r from-gray-950 via-transparent/10 to-gray-950 text-gray-50 h-full">
+                    <UContainer class="flex flex-col items-center justify-center gap-5 h-full">
+                        <h3 class="font-bold text-2xl md:text-4xl text-center drop-shadow-md">
+                            И ещё очень много фильмов!
+                        </h3>
+
+                        <UButton label="Присоединиться"
+                                 size="xl"
+                                 color="gray"
+                                 class="md:text-xl"
+                                 to="/management/films"
+                                 :ui="{rounded: 'rounded-xl', color: {gray: {solid: 'ring-0'}}}"/>
+                    </UContainer>
+                </div>
+            </div>
         </div>
     </UMain>
 </template>
