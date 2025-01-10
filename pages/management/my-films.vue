@@ -130,6 +130,13 @@ async function remove(watcher: FilmWatcher) {
 
         <template #actions-data="{row}">
             <div class="flex items-center justify-end gap-2.5">
+                <UTooltip v-if="row.film.can_watch" text="Смотреть">
+                    <UButton color="gray"
+                             icon="i-heroicons-play-solid"
+                             square
+                             :to="`/cinema/${row.film.id}`"/>
+                </UTooltip>
+
                 <UTooltip text="Оценки">
                     <UButton color="gray"
                              :icon="row.film.has_rating ? `i-heroicons-star-solid` : `i-heroicons-star`"
