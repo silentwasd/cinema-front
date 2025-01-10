@@ -34,7 +34,7 @@ function peopleEditSwitch() {
                 <img v-if="filmData.cover"
                      :src="fileUrl(filmData.cover)"
                      :alt="filmData.name"
-                     class="block rounded-lg w-full sm:max-h-[400px] border dark:border-gray-800"/>
+                     class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
             </div>
         </div>
 
