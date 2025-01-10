@@ -426,6 +426,13 @@ async function publish() {
                                  class="mt-1.5"
                                  icon="i-heroicons-arrow-uturn-left"
                                  @click="(new FilmAudioVariantRepository(selectedFilm.data.id)).update({id: audio.id}).then(() => loadAudioVariants())"/>
+
+                        <UButton v-if="!audio.is_default"
+                                 color="gray"
+                                 label="По умолчанию"
+                                 class="mt-1.5"
+                                 icon="i-heroicons-check"
+                                 @click="(new FilmAudioVariantRepository(selectedFilm.data.id)).markAsDefault(audio.id).then(() => loadAudioVariants())"/>
                     </div>
                 </div>
             </div>

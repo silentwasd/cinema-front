@@ -9,6 +9,10 @@ export default class FilmAudioVariantRepository extends CrudRepository<FilmAudio
         this.baseUrl += `/${filmId}/audio-variants`;
     }
 
+    markAsDefault(id: number) {
+        return this.client.post(`${this.baseUrl}/${id}/mark-as-default`);
+    }
+
     preview(data: any) {
         return this.client.post(`${this.baseUrl}/preview`, data);
     }
