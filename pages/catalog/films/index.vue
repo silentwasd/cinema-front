@@ -171,7 +171,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
 
             <template #name-data="{row}">
                 <NuxtLink class="flex items-center gap-2.5 hover:underline"
-                          :to="`/management/films/${row.id}`">
+                          :to="`/catalog/films/${row.id}`">
                     <div v-if="row.cover"
                          class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                          :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>

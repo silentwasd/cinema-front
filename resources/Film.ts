@@ -4,6 +4,7 @@ import type FilmPersonResource from "~/resources/FilmPersonResource";
 
 export default interface Film {
     id: number;
+    author_id: number;
     name: string;
     format: FilmFormat;
     cover?: string | File;

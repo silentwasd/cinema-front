@@ -184,7 +184,7 @@ onMounted(() => {
                                  color="gray"
                                  size="xl"
                                  class="[&>span]:w-10 [&>span]:h-10 text-gray-400 hover:text-white dark:hover:text-white"
-                                 to="/management/films"
+                                 :to="`/catalog/films/${film?.data.id}`"
                                  :padded="false"/>
                     </div>
                     <h1 class="font-roboto font-black text-4xl text-center text-white">{{ film?.data.name }}</h1>

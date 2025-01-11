@@ -24,22 +24,22 @@ const {state: profile, logout} = useProfile();
 const nav = computed(() => [{
     label  : 'Каталог',
     icon   : 'i-heroicons-folder-open-20-solid',
-    to     : '/management/films',
+    to     : '/catalog/films',
     visible: profile.value
 }, {
     label  : 'Мои фильмы',
     icon   : 'i-heroicons-film-16-solid',
-    to     : '/management/my-films',
+    to     : '/catalog/my-films',
     visible: profile.value
 }, {
     label  : 'Люди',
     icon   : 'i-heroicons-users-20-solid',
-    to     : '/management/people',
+    to     : '/catalog/people',
     visible: profile.value
 }, {
     label  : 'Производство',
     icon   : 'i-heroicons-light-bulb-solid',
-    to     : '/management/cinema',
+    to     : '/catalog/cinema',
     visible: profile.value?.role == UserRole.Admin
 }].filter(item => !item.hasOwnProperty('visible') || item.visible));
 </script>

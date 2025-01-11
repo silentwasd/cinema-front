@@ -2,15 +2,16 @@
 import FilmRepository from "~/repos/FilmRepository";
 import type Film from "~/resources/Film";
 import FilmPeopleEdit from "~/components/ui/FilmPeopleEdit.vue";
+import {UserRole} from "~/types/enums/UserRole";
 
 definePageMeta({
-    middleware: 'auth',
-    layout    : 'management'
+    layout: 'management'
 });
 
-const route    = useRoute();
-const filmId   = parseInt(route.params.film as string);
-const filmRepo = new FilmRepository();
+const route            = useRoute();
+const filmId           = parseInt(route.params.film as string);
+const filmRepo         = new FilmRepository();
+const {state: profile} = useProfile();
 
 const {data: film, refresh} = await filmRepo.show(`film.${filmId}`, filmId);
 
@@ -62,7 +63,7 @@ function peopleEditSwitch() {
                         <div class="flex justify-between items-center">
                             <h1 class="font-bold text-2xl">Люди</h1>
 
-                            <UButton v-if="filmData.can_edit"
+                            <UButton v-if="profile?.role == UserRole.Admin || (filmData.author_id && filmData.author_id == profile?.id)"
                                      color="gray"
                                      label="Редактировать"
                                      icon="i-heroicons-pencil-solid"
