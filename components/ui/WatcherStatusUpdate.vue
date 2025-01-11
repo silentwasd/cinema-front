@@ -18,7 +18,7 @@ const updating        = ref<boolean>(false);
 const toast           = useToast();
 const filmWatcherRepo = new FilmWatcherRepository();
 
-watch(() => props.watcher.status, async (value) => {
+async function update() {
     updating.value = true;
 
     try {
@@ -32,7 +32,7 @@ watch(() => props.watcher.status, async (value) => {
     } finally {
         updating.value = false;
     }
-});
+}
 </script>
 
 <template>
@@ -40,7 +40,8 @@ watch(() => props.watcher.status, async (value) => {
                  value-attribute="value"
                  :loading="updating"
                  :disabled="updating"
-                 v-model="watcher.status"/>
+                 v-model="watcher.status"
+                 @update:model-value="update"/>
 </template>
 
 <style scoped>

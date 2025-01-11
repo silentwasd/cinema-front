@@ -199,8 +199,8 @@ async function publish() {
 
                         <template v-else>
                             <div class="flex items-center gap-2.5">
-                                <UIcon name="i-heroicons-arrow-path" class="animate-spin text-xl"/>
-                                {{ download.hash }}
+                                <UIcon name="i-heroicons-arrow-path" class="animate-spin text-xl shrink-0"/>
+                                <p class="truncate">{{ download.hash }}</p>
                             </div>
                         </template>
                     </div>
