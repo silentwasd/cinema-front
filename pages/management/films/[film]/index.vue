@@ -32,11 +32,17 @@ function peopleEditSwitch() {
         <UContainer class="py-2.5">
             <div v-if="filmData" class="flex flex-col sm:flex-row gap-5 pb-5">
                 <div class="shrink-0">
-                    <div class="sm:sticky sm:top-20">
+                    <div class="sm:sticky sm:top-20 flex flex-col gap-2.5">
                         <img v-if="filmData.cover"
                              :src="fileUrl(filmData.cover)"
                              :alt="filmData.name"
                              class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
+
+                        <UButton v-if="filmData.can_watch"
+                                 color="gray"
+                                 label="Смотреть"
+                                 icon="i-heroicons-play-solid"
+                                 :to="`/cinema/${filmData.id}`"/>
                     </div>
                 </div>
 
