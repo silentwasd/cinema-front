@@ -26,7 +26,7 @@ async function submit() {
         const client   = new ApiClient();
         const response = await client.post<{ token: string }>('/register', state.value);
         token.value    = response.token;
-        await navigateTo('/management/films');
+        await navigateTo('catalog/films');
     } catch (err: any) {
         if (err.statusCode === 422) {
             form.value.setErrors(Object.keys(err.data.errors).map((key: string) => ({

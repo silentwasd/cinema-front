@@ -1,4 +1,5 @@
 import type {FilmFormat} from "~/types/enums/FilmFormat";
+import type {FilmCinemaStatus} from "~/types/enums/FilmCinemaStatus";
 
 export default interface FilmResource {
     id: number;
@@ -7,4 +8,5 @@ export default interface FilmResource {
     cover?: string | File;
     release_date?: string;
     description?: string;
+    cinema_status: FilmCinemaStatus;
 }
