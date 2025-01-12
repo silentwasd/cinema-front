@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Hls from "hls.js";
 import FilmVideoVariantRepository from "~/repos/production/FilmVideoVariantRepository";
+import {FilmVideoVariantStatus} from "~/types/enums/FilmVideoVariantStatus";
 
 const props = defineProps<{
     id: number
@@ -25,11 +26,12 @@ const selectedAudio   = ref<number>();
 const {data: videos} = await videoRepo.list(`film.${props.id}.videos`);
 const sortedVideos   = computed(() => [
     {index: -1, name: 'Auto'},
-    ...videos.value?.data.toSorted((a, b) => a.height - b.height).map((video, index) => ({
-        index,
-        name  : video.name,
-        height: video.height
-    })).toSorted((a, b) => b.height - a.height) ?? []
+    ...videos.value?.data.filter(video => video.status == FilmVideoVariantStatus.Completed)
+        .toSorted((a, b) => a.height - b.height).map((video, index) => ({
+            index,
+            name  : video.name,
+            height: video.height
+        })).toSorted((a, b) => b.height - a.height) ?? []
 ]);
 
 hls.on(Hls.Events.LEVEL_SWITCHING, (e, data) => {
