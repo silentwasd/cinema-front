@@ -53,7 +53,10 @@ useIntervalFn(() => {
 
 async function selectFilm(film: FilmResource) {
     try {
-        selectedFilm.value = await filmRepo.get(film.id);
+        selectedFilm.value = await filmRepo.get(film.id, selectedFilm.value?.selectedFile ? {
+            file: selectedFilm.value?.selectedFile
+        } : undefined);
+
         await loadVideoVariants();
         await loadAudioVariants();
     } catch (err: any) {
@@ -254,12 +257,13 @@ async function detach(film: FilmResource) {
                             <UDivider class="py-2 [&>div]:dark:border-gray-700"/>
 
                             <div class="flex gap-2">
-                                <UButton v-if="film.has_download || film.video_variants_count || film.audio_variants_count"
-                                         icon="i-heroicons-arrow-right"
-                                         color="gray"
-                                         label="Перейти"
-                                         size="xs"
-                                         @click="selectFilm(film)"/>
+                                <UButton
+                                    v-if="film.has_download || film.video_variants_count || film.audio_variants_count"
+                                    icon="i-heroicons-arrow-right"
+                                    color="gray"
+                                    label="Перейти"
+                                    size="xs"
+                                    @click="selectFilm(film)"/>
 
                                 <UButton v-if="film.has_download"
                                          icon="i-heroicons-link-slash-20-solid"
@@ -275,6 +279,19 @@ async function detach(film: FilmResource) {
 
             <div v-if="selectedFilm && selectedFilm.data.has_download" class="flex flex-col w-1/4 h-full shrink-0">
                 <h1 class="text-xl font-semibold shrink-0 truncate">Фильм "{{ selectedFilm.data.name }}"</h1>
+
+                <USelectMenu :options="selectedFilm.files"
+                             v-model="selectedFilm.selectedFile"
+                             @update:model-value="selectFilm(selectedFilm.data)">
+                    <template #option="{option}">
+                        <div class="flex flex-col items-start truncate">
+                            <div class="w-full">
+                                <p class="truncate">{{ option }}</p>
+                            </div>
+                            <UBadge color="gray">{{ option.split('.').toReversed()[0] }}</UBadge>
+                        </div>
+                    </template>
+                </USelectMenu>
 
                 <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
                     <UButton v-if="selectedFilm.data.is_video_ready && selectedFilm.data.is_audio_ready"

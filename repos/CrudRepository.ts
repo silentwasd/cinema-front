@@ -29,8 +29,8 @@ export default abstract class CrudRepository<T, ID> extends Repository {
         return this.client.getData<R>(key, `${this.baseUrl}/${id}`);
     }
 
-    public get<R = Resource<T>>(id: ID) {
-        return this.client.get<R>(`${this.baseUrl}/${id}`);
+    public get<R = Resource<T>>(id: ID, data?: any) {
+        return this.client.get<R>(`${this.baseUrl}/${id}?` + querify(data ?? {}).toString());
     }
 
     public update<R = void>(data: Partial<T>): Promise<R> {
