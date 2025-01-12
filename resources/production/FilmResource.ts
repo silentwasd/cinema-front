@@ -9,4 +9,6 @@ export default interface FilmResource {
     video_variants_count?: number;
     audio_variants_count?: number;
     has_download: boolean;
+    is_video_ready?: boolean;
+    is_audio_ready?: boolean;
 }

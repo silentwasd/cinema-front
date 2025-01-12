@@ -277,14 +277,14 @@ async function detach(film: FilmResource) {
                 <h1 class="text-xl font-semibold shrink-0 truncate">Фильм "{{ selectedFilm.data.name }}"</h1>
 
                 <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
-                    <UButton v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count"
+                    <UButton v-if="selectedFilm.data.is_video_ready && selectedFilm.data.is_audio_ready"
                              color="gray"
                              icon="i-heroicons-play-solid"
                              label="Посмотреть"
                              @click="watch = true"/>
 
                     <UButton
-                        v-if="selectedFilm.data.video_variants_count && selectedFilm.data.audio_variants_count && selectedFilm.data.cinema_status != FilmCinemaStatus.Published"
+                        v-if="selectedFilm.data.is_video_ready && selectedFilm.data.is_audio_ready && selectedFilm.data.cinema_status != FilmCinemaStatus.Published"
                         color="gray"
                         icon="i-heroicons-arrow-up-tray"
                         label="Опубликовать"
