@@ -7,4 +7,5 @@ export default interface DownloadResource {
     status: DownloadStatus | null;
     hash: string | null;
     name: string | null;
+    has_film: boolean;
 }

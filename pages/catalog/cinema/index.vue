@@ -163,6 +163,23 @@ async function publish() {
         });
     }
 }
+
+async function detach(film: FilmResource) {
+    try {
+        if (film.id == selectedFilm.value?.data.id)
+            selectedFilm.value = undefined;
+
+        await filmRepo.remove(film.id);
+        await refreshFilms();
+        await refreshDownloads();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
 </script>
 
 <template>
@@ -187,9 +204,8 @@ async function publish() {
                             <UProgress :value="download.progress"/>
                             <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
 
-                            <div>
-                                <UButton v-if="download.status == DownloadStatus.Seeding"
-                                         icon="i-heroicons-link-20-solid"
+                            <div v-if="download.status == DownloadStatus.Seeding && !download.has_film">
+                                <UButton icon="i-heroicons-link-20-solid"
                                          color="gray"
                                          label="Привязать к фильму"
                                          size="xs"
@@ -211,29 +227,53 @@ async function publish() {
                 <h1 class="text-xl font-semibold shrink-0">Фильмы</h1>
 
                 <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">
-                    <NuxtLink v-for="film in films?.data ?? []"
-                              class="flex gap-2.5 items-start bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700"
-                              :key="film.id"
-                              to="#"
-                              @click="selectFilm(film)">
-                        <img :src="fileUrl(film.cover)" class="w-10 h-10 object-cover rounded-md shrink-0"/>
+                    <div v-for="film in films?.data ?? []"
+                         class="bg-gray-100 dark:bg-gray-800 rounded-md p-2.5 border dark:border-gray-700"
+                         :key="film.id">
+                        <div class="flex gap-2.5 items-start"
+                             :class="{'cursor-pointer': film.has_download}"
+                             @click="film.has_download ? selectFilm(film) : null">
+                            <img :src="fileUrl(film.cover)" class="w-10 h-10 object-cover rounded-md shrink-0"/>
 
-                        <div class="truncate">
-                            <p class="font-semibold truncate leading-5 text-lg">{{ film.name }}</p>
-                            <NuxtTime :datetime="film.release_date" class="text-sm"/>
-                            <p>
-                                <UBadge class="text-sm uppercase"
-                                        color="gray"
-                                        size="xs">
-                                    {{ film.cinema_status }}
-                                </UBadge>
-                            </p>
+                            <div class="truncate">
+                                <p class="font-semibold truncate leading-5 text-lg">{{ film.name }}</p>
+
+                                <NuxtTime :datetime="film.release_date" class="text-sm"/>
+
+                                <p>
+                                    <UBadge class="text-sm uppercase"
+                                            color="gray"
+                                            size="xs">
+                                        {{ film.cinema_status }}
+                                    </UBadge>
+                                </p>
+                            </div>
                         </div>
-                    </NuxtLink>
+
+                        <template v-if="film.has_download || film.video_variants_count || film.audio_variants_count">
+                            <UDivider class="py-2 [&>div]:dark:border-gray-700"/>
+
+                            <div class="flex gap-2">
+                                <UButton v-if="film.has_download || film.video_variants_count || film.audio_variants_count"
+                                         icon="i-heroicons-arrow-right"
+                                         color="gray"
+                                         label="Перейти"
+                                         size="xs"
+                                         @click="selectFilm(film)"/>
+
+                                <UButton v-if="film.has_download"
+                                         icon="i-heroicons-link-slash-20-solid"
+                                         color="gray"
+                                         label="Отвязать фильм"
+                                         size="xs"
+                                         @click="detach(film)"/>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
 
-            <div v-if="selectedFilm" class="flex flex-col w-1/4 h-full shrink-0">
+            <div v-if="selectedFilm && selectedFilm.data.has_download" class="flex flex-col w-1/4 h-full shrink-0">
                 <h1 class="text-xl font-semibold shrink-0 truncate">Фильм "{{ selectedFilm.data.name }}"</h1>
 
                 <div class="flex flex-col gap-2.5 mt-2.5 overflow-auto h-0 grow">

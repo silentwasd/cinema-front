@@ -8,4 +8,5 @@ export default interface FilmResource {
     cinema_status: FilmCinemaStatus;
     video_variants_count?: number;
     audio_variants_count?: number;
+    has_download: boolean;
 }
