@@ -362,7 +362,7 @@ async function remove(download: DownloadResource) {
                                  label="Обработать"
                                  icon="i-heroicons-rocket-launch-solid"
                                  class="mt-1.5"
-                                 @click="videoProcess = selectedFilm.info.video"/>
+                                 @click="videoProcess = {...selectedFilm.info.video, file: selectedFilm.selectedFile}"/>
                     </div>
 
                     <div v-for="audio in selectedFilm.info.audio"
@@ -392,7 +392,7 @@ async function remove(download: DownloadResource) {
                                  label="Обработать"
                                  icon="i-heroicons-rocket-launch-solid"
                                  class="mt-1.5"
-                                 @click="audioProcess = audio"/>
+                                 @click="audioProcess = {...audio, file: selectedFilm.selectedFile}"/>
                     </div>
                 </div>
             </div>
