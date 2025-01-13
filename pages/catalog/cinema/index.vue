@@ -183,6 +183,19 @@ async function detach(film: FilmResource) {
         });
     }
 }
+
+async function remove(download: DownloadResource) {
+    try {
+        await downloadRepo.remove(download.id);
+        await refreshDownloads();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
 </script>
 
 <template>
@@ -208,11 +221,21 @@ async function detach(film: FilmResource) {
                             <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
 
                             <div v-if="download.status == DownloadStatus.Seeding && !download.has_film">
-                                <UButton icon="i-heroicons-link-20-solid"
-                                         color="gray"
-                                         label="Привязать к фильму"
-                                         size="xs"
-                                         @click="attachDownload = download"/>
+                                <UDivider class="pb-2 [&>div]:dark:border-gray-700"/>
+
+                                <div class="flex gap-2">
+                                    <UButton icon="i-heroicons-link-20-solid"
+                                             color="gray"
+                                             label="Привязать к фильму"
+                                             size="xs"
+                                             @click="attachDownload = download"/>
+
+                                    <UButton icon="i-heroicons-trash-20-solid"
+                                             color="gray"
+                                             label="Удалить"
+                                             size="xs"
+                                             @click="remove(download)"/>
+                                </div>
                             </div>
                         </template>
 
@@ -510,7 +533,7 @@ async function detach(film: FilmResource) {
     </ModalInnerState>
 
     <ModalEditModel v-model="attachDownload"
-                    :save="(state: any) => downloadRepo.update(state).then(() => refreshFilms())">
+                    :save="(state: any) => downloadRepo.update(state).then(() => refreshFilms()).then(() => refreshDownloads())">
         <template #edit-title>Привязать к фильму</template>
 
         <template #default="{state}">
