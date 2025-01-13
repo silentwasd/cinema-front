@@ -10,4 +10,5 @@ export default interface FilmVideoVariantResource {
     status: FilmVideoVariantStatus;
     path: string | null;
     to_sdr: boolean;
+    progress: number;
 }

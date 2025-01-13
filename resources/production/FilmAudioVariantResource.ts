@@ -9,4 +9,5 @@ export default interface FilmAudioVariantResource {
     status: FilmAudioVariantStatus;
     is_default: boolean;
     path: string | null;
+    progress: number;
 }

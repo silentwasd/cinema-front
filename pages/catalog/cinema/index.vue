@@ -196,6 +196,34 @@ async function remove(download: DownloadResource) {
         });
     }
 }
+
+async function removeVideoVariant(video: FilmVideoVariantResource) {
+    try {
+        const repo = new FilmVideoVariantRepository(selectedFilm.value?.data.id);
+        await repo.remove(video.id);
+        await loadVideoVariants();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
+
+async function removeAudioVariant(audio: FilmAudioVariantResource) {
+    try {
+        const repo = new FilmAudioVariantRepository(selectedFilm.value?.data.id);
+        await repo.remove(audio.id);
+        await loadAudioVariants();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
 </script>
 
 <template>
@@ -438,6 +466,11 @@ async function remove(download: DownloadResource) {
                                     <UBadge color="gray">{{ video.status.toUpperCase() }}</UBadge>
                                 </td>
                             </tr>
+                            <tr v-if="video.status == FilmVideoVariantStatus.Processing">
+                                <td colspan="2">
+                                    <UProgress :value="video.progress" indicator/>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
 
@@ -452,6 +485,13 @@ async function remove(download: DownloadResource) {
                                  class="mt-1.5"
                                  icon="i-heroicons-arrow-uturn-left"
                                  @click="(new FilmVideoVariantRepository(selectedFilm.data.id)).update({id: video.id}).then(() => loadVideoVariants())"/>
+
+                        <UButton v-if="video.status == FilmVideoVariantStatus.Completed"
+                                 color="gray"
+                                 label="Удалить"
+                                 class="mt-1.5"
+                                 icon="i-heroicons-trash-20-solid"
+                                 @click="removeVideoVariant(video)"/>
                     </div>
 
                     <div v-for="audio in audioVariants"
@@ -492,6 +532,11 @@ async function remove(download: DownloadResource) {
                                 <td>По умолчанию</td>
                                 <td>{{ audio.is_default ? 'да' : 'нет' }}</td>
                             </tr>
+                            <tr v-if="audio.status == FilmAudioVariantStatus.Processing">
+                                <td colspan="2">
+                                    <UProgress :value="audio.progress" indicator/>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
 
@@ -513,6 +558,13 @@ async function remove(download: DownloadResource) {
                                  class="mt-1.5"
                                  icon="i-heroicons-check"
                                  @click="(new FilmAudioVariantRepository(selectedFilm.data.id)).markAsDefault(audio.id).then(() => loadAudioVariants())"/>
+
+                        <UButton v-if="audio.status == FilmAudioVariantStatus.Completed"
+                                 color="gray"
+                                 label="Удалить"
+                                 class="mt-1.5"
+                                 icon="i-heroicons-trash-20-solid"
+                                 @click="removeAudioVariant(audio)"/>
                     </div>
                 </div>
             </div>
