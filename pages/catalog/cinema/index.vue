@@ -322,6 +322,13 @@ async function removeAudioVariant(audio: FilmAudioVariantResource) {
                                          label="Отвязать фильм"
                                          size="xs"
                                          @click="detach(film)"/>
+
+                                <UButton v-if="!film.has_download"
+                                         icon="i-heroicons-x-mark"
+                                         color="gray"
+                                         label="Убрать фильм"
+                                         size="xs"
+                                         @click="detach(film)"/>
                             </div>
                         </template>
                     </div>
