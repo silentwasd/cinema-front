@@ -3,7 +3,6 @@ import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
-import type Film from "~/resources/Film";
 
 definePageMeta({
     middleware: 'auth',
@@ -60,7 +59,6 @@ const columns = [
     }
 ];
 
-const ratingRow = ref<Film>();
 const removing  = ref<{ [key: string]: boolean }>({});
 const toast     = useToast();
 
@@ -142,12 +140,6 @@ async function remove(watcher: FilmWatcher) {
                                  :to="`/cinema/${row.film.id}`"/>
                     </UTooltip>
 
-                    <UTooltip text="Оценки">
-                        <UButton color="gray"
-                                 :icon="row.film.has_rating ? `i-heroicons-star-solid` : `i-heroicons-star`"
-                                 @click="ratingRow = row.film"/>
-                    </UTooltip>
-
                     <UTooltip text="Удалить">
                         <UButton color="gray"
                                  icon="i-heroicons-trash-solid"
@@ -158,8 +150,6 @@ async function remove(watcher: FilmWatcher) {
             </template>
         </UiSelectTable>
     </UiManagementMain>
-
-    <ModalRatings v-model="ratingRow" @updated="refresh"/>
 </template>
 
 <style scoped>

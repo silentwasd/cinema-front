@@ -42,6 +42,7 @@ async function submit() {
         const response = await client.post<{ token: string }>('/register', state.value);
         token.value    = response.token;
         await navigateTo(afterLogin.value ? afterLogin.value : '/catalog/films');
+        afterLogin.value = '';
     } catch (err: any) {
         if (err.statusCode === 422) {
             form.value.setErrors(Object.keys(err.data.errors).map((key: string) => ({

@@ -140,17 +140,7 @@ function peopleEditSwitch() {
                         <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
                     </div>
 
-                    <div v-if="filmData.ratings.length > 0">
-                        <h1 class="font-bold text-2xl">Рейтинги</h1>
-
-                        <div class="flex flex-col gap-2.5 mt-2.5">
-                            <div v-for="rating in filmData.ratings.sort((a, b) => b.created_at - a.created_at)"
-                                 :key="rating.id">
-                                <p class="font-medium leading-4">{{ rating.user?.name }}</p>
-                                <p class="text-xl">{{ rating.data.comment }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <BlockFeedback :film-id="filmData.id"/>
                 </div>
             </div>
         </UContainer>

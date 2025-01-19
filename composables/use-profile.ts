@@ -15,7 +15,7 @@ export default function () {
     async function logout() {
         state.value = null;
         token.value = '';
-        await navigateTo('/');
+        await reloadNuxtApp({persistState: false});
     }
 
     return {state, refresh, logout};

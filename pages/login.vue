@@ -41,6 +41,7 @@ async function submit() {
         });
         token.value    = response.token;
         await navigateTo(afterLogin.value ? afterLogin.value : '/catalog/films');
+        afterLogin.value = '';
     } catch (e: any) {
         toast.add({
             title      : 'Ошибка',
