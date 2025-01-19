@@ -27,10 +27,11 @@ const state = ref({
     password_confirmation: ''
 });
 
-const loading = ref<boolean>(false);
-const token   = useToken();
-const toast   = useToast();
-const form    = ref();
+const loading    = ref<boolean>(false);
+const token      = useToken();
+const toast      = useToast();
+const form       = ref();
+const afterLogin = useCookie<string>('after_login');
 
 async function submit() {
     form.value.clear();
@@ -40,7 +41,7 @@ async function submit() {
         const client   = new ApiClient();
         const response = await client.post<{ token: string }>('/register', state.value);
         token.value    = response.token;
-        await navigateTo('catalog/films');
+        await navigateTo(afterLogin.value ? afterLogin.value : '/catalog/films');
     } catch (err: any) {
         if (err.statusCode === 422) {
             form.value.setErrors(Object.keys(err.data.errors).map((key: string) => ({

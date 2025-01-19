@@ -61,6 +61,12 @@ function peopleEditSwitch() {
                              class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
 
                         <LazyUiWatcherStatusCreateOrUpdate v-if="profile" :film-id="filmData.id"/>
+                        <UButton v-else
+                                 color="gray"
+                                 label="В мои фильмы"
+                                 icon="i-heroicons-plus"
+                                 class="w-full"
+                                 @click="backAfterLogin()"/>
 
                         <UButton v-if="filmData.can_watch"
                                  color="gray"

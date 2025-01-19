@@ -25,9 +25,10 @@ const state = ref({
     password: ''
 });
 
-const loading = ref<boolean>(false);
-const token   = useToken();
-const toast   = useToast();
+const loading    = ref<boolean>(false);
+const token      = useToken();
+const toast      = useToast();
+const afterLogin = useCookie<string>('after_login');
 
 async function submit() {
     loading.value = true;
@@ -39,7 +40,7 @@ async function submit() {
             password: state.value.password
         });
         token.value    = response.token;
-        await navigateTo('/catalog/films');
+        await navigateTo(afterLogin.value ? afterLogin.value : '/catalog/films');
     } catch (e: any) {
         toast.add({
             title      : 'Ошибка',
