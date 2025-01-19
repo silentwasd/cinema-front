@@ -60,6 +60,8 @@ function peopleEditSwitch() {
                              :alt="filmData.name"
                              class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
 
+                        <LazyUiWatcherStatusCreateOrUpdate v-if="profile" :film-id="filmData.id"/>
+
                         <UButton v-if="filmData.can_watch"
                                  color="gray"
                                  label="Смотреть"
