@@ -86,7 +86,7 @@ const nav = computed(() => [{
                 <UButton icon="i-simple-icons-telegram"
                          color="gray"
                          variant="ghost"
-                         to="https://t.me/vkinopoiskru"
+                         to="https://t.me/vkinopoiskruch"
                          target="_blank"/>
             </template>
         </UFooter>
