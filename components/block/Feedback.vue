@@ -71,6 +71,7 @@ watch(add, value => {
                                  color="gray"
                                  icon="i-heroicons-paper-airplane-16-solid"
                                  :loading="publishing"
+                                 :disabled="text.length > 512"
                                  @click="publish"/>
 
                         <UTooltip text="Закрыть">
