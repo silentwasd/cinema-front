@@ -186,6 +186,10 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
             </template>
 
+            <template #release_date-data="{row}">
+                <NuxtTime :datetime="row.release_date" date-style="short"/>
+            </template>
+
             <template #directors-data="{row}">
                 <div>
                     <div

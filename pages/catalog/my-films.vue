@@ -125,6 +125,10 @@ async function remove(watcher: FilmWatcher) {
                 {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
             </template>
 
+            <template #film.release_date-data="{row}">
+                <NuxtTime :datetime="row.film.release_date" date-style="short"/>
+            </template>
+
             <template #status-data="{row}">
                 <UiWatcherStatusUpdate :watcher="row"/>
             </template>
