@@ -20,8 +20,8 @@ export default defineNuxtConfig({
         host : '0.0.0.0',
         port : 3000,
         https: {
-            key : '../certs/film-back-local.vrkitty.ru/privkey.pem',
-            cert: '../certs/film-back-local.vrkitty.ru/fullchain.pem'
+            key : process.env.NUXT_SSL_KEY_FILE,
+            cert: process.env.NUXT_SSL_CERT_FILE
         }
     },
 

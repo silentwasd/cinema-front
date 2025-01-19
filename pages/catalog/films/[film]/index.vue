@@ -3,12 +3,14 @@ import FilmRepository from "~/repos/FilmRepository";
 import type Film from "~/resources/Film";
 import FilmPeopleEdit from "~/components/ui/FilmPeopleEdit.vue";
 import {UserRole} from "~/types/enums/UserRole";
+import {PersonRole} from "~/types/enums/PersonRole";
 
 definePageMeta({
     layout: 'management'
 });
 
 const route            = useRoute();
+const config           = useRuntimeConfig();
 const filmId           = parseInt(route.params.film as string);
 const filmRepo         = new FilmRepository();
 const {state: profile} = useProfile();
@@ -16,6 +18,25 @@ const {state: profile} = useProfile();
 const {data: film, refresh} = await filmRepo.show(`film.${filmId}`, filmId);
 
 const filmData = computed<Film | null>(() => film.value?.data || null);
+const director = computed<string | undefined | null>(() => filmData.value?.people?.find(person => person.role == PersonRole.Director)?.person?.name);
+const actor    = computed<string | undefined | null>(() => filmData.value?.people?.find(person => person.role == PersonRole.Actor)?.person?.name);
+
+useSeoMeta({
+    title        : filmData.value?.name + ' // ВКинопоиск',
+    description  : filmData.value?.description,
+    ogTitle      : filmData.value?.name,
+    ogDescription: filmData.value?.description,
+    ogImage      : filmData.value?.cover
+                   ? fileUrl(filmData.value.cover as string)
+                   : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl + '/catalog/films/' + filmData.value?.id,
+    ogType       : 'video.movie',
+    ...director.value ? {ogDirector: director.value} : {},
+    ...actor.value ? {ogActor: actor.value} : {},
+    ...filmData.value?.release_date ? {ogRelease_date: new Date(filmData.value.release_date).toISOString().slice(0, 10)} : {},
+    ogLocale  : 'ru_RU',
+    ogSiteName: 'ВКинопоиск'
+});
 
 const peopleEdit    = ref<boolean>(false);
 const peopleDetails = ref<boolean>(false);
@@ -53,7 +74,9 @@ function peopleEditSwitch() {
 
                         <div class="flex text-xl font-medium">
                             <p>{{ filmFormat(filmData.format) }}</p>
-                            <p v-if="filmData.release_date" class="has-dot">{{ filmData.release_date }}</p>
+                            <p v-if="filmData.release_date" class="has-dot">
+                                <NuxtTime :datetime="filmData.release_date" date-style="short"/>
+                            </p>
                         </div>
 
                         <p class="text-xl font-light">{{ filmData.description }}</p>
@@ -63,11 +86,12 @@ function peopleEditSwitch() {
                         <div class="flex justify-between items-center">
                             <h1 class="font-bold text-2xl">Люди</h1>
 
-                            <UButton v-if="profile?.role == UserRole.Admin || (filmData.author_id && filmData.author_id == profile?.id)"
-                                     color="gray"
-                                     label="Редактировать"
-                                     icon="i-heroicons-pencil-solid"
-                                     @click="peopleEditSwitch"/>
+                            <UButton
+                                v-if="profile?.role == UserRole.Admin || (filmData.author_id && filmData.author_id == profile?.id)"
+                                color="gray"
+                                label="Редактировать"
+                                icon="i-heroicons-pencil-solid"
+                                @click="peopleEditSwitch"/>
                         </div>
 
                         <FilmPeopleEdit v-if="peopleEdit"
