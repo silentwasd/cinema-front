@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+const config = useRuntimeConfig();
 </script>
 
 <template>
@@ -9,6 +9,10 @@
     <NuxtLayout>
         <NuxtPage/>
     </NuxtLayout>
+
+    <ClientOnly>
+        <MetricYandex v-if="config.public.metrics"/>
+    </ClientOnly>
 </template>
 
 <style scoped>
