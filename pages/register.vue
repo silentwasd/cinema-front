@@ -6,6 +6,20 @@ definePageMeta({
     middleware: 'auth'
 });
 
+const config = useRuntimeConfig();
+
+useSeoMeta({
+    title        : 'Регистрация на ВКинопоиск',
+    description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogTitle      : 'Регистрация на ВКинопоиск',
+    ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogImage      : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl,
+    ogType       : 'website',
+    ogLocale     : 'ru_RU',
+    ogSiteName   : 'ВКинопоиск'
+});
+
 const state = ref({
     name                 : '',
     email                : '',
