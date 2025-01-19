@@ -6,4 +6,5 @@ export default interface FilmWatcher {
     film_id?: number;
     film?: Film;
     status: FilmWatchStatus;
+    reaction?: number;
 }

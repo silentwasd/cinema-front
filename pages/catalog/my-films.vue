@@ -140,6 +140,8 @@ async function remove(watcher: FilmWatcher) {
                                  :to="`/cinema/${row.film.id}`"/>
                     </UTooltip>
 
+                    <LazyUiFilmReaction :film-id="row.film.id" :init-reaction="row.reaction"/>
+
                     <UTooltip text="Удалить">
                         <UButton color="gray"
                                  icon="i-heroicons-trash-solid"

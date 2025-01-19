@@ -5,6 +5,7 @@ export default interface FeedbackResource {
     user?: User;
     text: string | null;
     reaction: number;
+    create?: boolean;
     created_at: string;
     updated_at: string;
 }
