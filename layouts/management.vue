@@ -61,6 +61,11 @@ const nav = computed(() => [{
             <template #right>
                 <UColorModeButton/>
 
+                <UButton icon="i-heroicons-wifi-20-solid"
+                         variant="link"
+                         color="gray"
+                         to="/speed"/>
+
                 <UButton v-if="profile"
                          icon="i-heroicons-arrow-right-start-on-rectangle-20-solid"
                          variant="link"
