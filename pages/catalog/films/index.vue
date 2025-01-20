@@ -178,7 +178,7 @@ const filmWatcherRepo = new FilmWatcherRepository();
 
                     <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
-                    <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
+                    <p>{{ row.name.length > 40 ? row.name.slice(0, 40) + '...' : row.name }}</p>
                 </NuxtLink>
             </template>
 
