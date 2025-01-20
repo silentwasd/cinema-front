@@ -59,7 +59,7 @@ watch(add, value => {
     <div class="flex flex-col gap-2.5">
         <h1 class="font-bold text-2xl font-roboto leading-5">Отзывы</h1>
 
-        <div v-if="profile" class="sticky top-20 bg-gray-900 z-10 pb-2.5">
+        <div v-if="profile" class="sticky top-20 bg-white dark:bg-gray-900 z-10 pb-2.5">
             <template v-if="add">
                 <UTextarea placeholder="Опишите свои эмоции, чувства или какую-нибудь запоминающуюся фразу из фильма..."
                            :rows="5"

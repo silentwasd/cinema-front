@@ -14,7 +14,20 @@ definePageMeta({
     layout    : 'management'
 });
 
-const route = useRoute();
+const route  = useRoute();
+const config = useRuntimeConfig();
+
+useSeoMeta({
+    title        : 'ВКинопоиск',
+    description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogTitle      : 'ВКинопоиск',
+    ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogImage      : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl,
+    ogType       : 'website',
+    ogLocale     : 'ru_RU',
+    ogSiteName   : 'ВКинопоиск'
+});
 
 const repo = new FilmRepository();
 
@@ -112,8 +125,6 @@ function makeResource(): Film {
         format: FilmFormat.Film
     };
 }
-
-const config = useRuntimeConfig();
 
 const watchStatusOptions = [
     {label: 'Можно посмотреть', value: FilmWatchStatus.ToWatch},

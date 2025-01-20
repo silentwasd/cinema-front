@@ -9,7 +9,20 @@ definePageMeta({
     layout    : 'management'
 });
 
-const route = useRoute();
+const route  = useRoute();
+const config = useRuntimeConfig();
+
+useSeoMeta({
+    title        : 'ВКинопоиск',
+    description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogTitle      : 'ВКинопоиск',
+    ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
+    ogImage      : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl,
+    ogType       : 'website',
+    ogLocale     : 'ru_RU',
+    ogSiteName   : 'ВКинопоиск'
+});
 
 const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
 
@@ -59,8 +72,8 @@ const columns = [
     }
 ];
 
-const removing  = ref<{ [key: string]: boolean }>({});
-const toast     = useToast();
+const removing = ref<{ [key: string]: boolean }>({});
+const toast    = useToast();
 
 async function remove(watcher: FilmWatcher) {
     removing.value[watcher.id] = true;
