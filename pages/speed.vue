@@ -5,6 +5,20 @@ definePageMeta({
     layout: 'management'
 });
 
+const config = useRuntimeConfig();
+
+useSeoMeta({
+    title        : 'Замерить скорость ВКинопоиске',
+    description  : 'Проверь, как быстро грузятся фрагменты видео нашего сервера.',
+    ogTitle      : 'Замерить скорость ВКинопоиске',
+    ogDescription: 'Проверь, как быстро грузятся фрагменты видео нашего сервера.',
+    ogImage      : config.public.externalUrl + '/img/cinema.png',
+    ogUrl        : config.public.externalUrl,
+    ogType       : 'website',
+    ogLocale     : 'ru_RU',
+    ogSiteName   : 'ВКинопоиск'
+});
+
 const speedRepo          = new SpeedRepository();
 const {data: streamData} = await speedRepo.index();
 
