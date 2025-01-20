@@ -5,8 +5,8 @@ definePageMeta({
     layout: 'management'
 });
 
-const speedRepo = new SpeedRepository();
-const {data: streamData}    = await speedRepo.index();
+const speedRepo          = new SpeedRepository();
+const {data: streamData} = await speedRepo.index();
 
 const speedData = ref<any>([]);
 const running   = ref<boolean>(false);
@@ -20,13 +20,21 @@ async function run() {
 
     const from = 1;
     const to   = 30;
+    let pad    = 4;
 
     for (let i = from; i <= to; i++) {
         const start = Date.now();
 
-        await $fetch(fileUrl(streamData.value?.stream ?? '') + `_${i.toString().padStart(4, '0')}.ts`, {
-            cache: 'no-cache'
-        });
+        try {
+            await $fetch(fileUrl(streamData.value?.stream ?? '') + `_${i.toString().padStart(pad, '0')}.ts`, {
+                cache: 'no-cache'
+            });
+        } catch {
+            pad--;
+            await $fetch(fileUrl(streamData.value?.stream ?? '') + `_${i.toString().padStart(pad, '0')}.ts`, {
+                cache: 'no-cache'
+            });
+        }
 
         const diff = Date.now() - start;
 
