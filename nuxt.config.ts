@@ -8,6 +8,10 @@ export default defineNuxtConfig({
 
     modules: ["@nuxt/ui", '@nuxtjs/google-fonts', '@vueuse/nuxt', 'nuxt-time'],
 
+    colorMode: {
+        preference: 'dark'
+    },
+
     runtimeConfig: {
         public: {
             apiUrl     : process.env.NUXT_API_URL,

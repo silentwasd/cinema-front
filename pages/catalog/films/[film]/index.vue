@@ -4,6 +4,8 @@ import type Film from "~/resources/Film";
 import FilmPeopleEdit from "~/components/ui/FilmPeopleEdit.vue";
 import {UserRole} from "~/types/enums/UserRole";
 import {PersonRole} from "~/types/enums/PersonRole";
+import type GenreResource from "~/resources/management/GenreResource";
+import type CountryResource from "~/resources/management/CountryResource";
 
 definePageMeta({
     layout: 'management'
@@ -76,18 +78,37 @@ function peopleEditSwitch() {
                     </div>
                 </div>
 
-                <div class="flex flex-col font-robot gap-10 grow">
-                    <div class="flex flex-col gap-2.5">
+                <div class="flex flex-col font-roboto gap-10 mt-2.5 grow">
+                    <div class="flex flex-col">
                         <h1 class="font-black text-4xl leading-9">{{ filmData.name }}</h1>
 
-                        <div class="flex text-xl font-medium">
+                        <div class="flex flex-wrap text-xl font-medium font-sans">
                             <p>{{ filmFormat(filmData.format) }}</p>
+
                             <p v-if="filmData.release_date" class="has-dot">
-                                <NuxtTime :datetime="filmData.release_date" date-style="short"/>
+                                <NuxtTime :datetime="filmData.release_date" year="numeric"/>
                             </p>
                         </div>
 
-                        <p class="text-xl font-light">{{ filmData.description }}</p>
+                        <table v-if="(filmData.genres ?? []).length > 0 || (filmData.countries ?? []).length > 0"
+                               class="mt-2.5 text-lg">
+                            <tbody>
+                            <tr v-if="(filmData.genres ?? []).length > 0">
+                                <td>Жанр</td>
+                                <td>
+                                    {{ filmData.genres?.map((genre, index) => index == 0 ? (genre as GenreResource).name : (genre as GenreResource).name.toLowerCase())?.join(', ') }}
+                                </td>
+                            </tr>
+                            <tr v-if="(filmData.countries ?? []).length > 0">
+                                <td>Страна</td>
+                                <td>
+                                    {{ filmData.countries?.map((country) => (country as CountryResource).name)?.join(', ') }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="text-xl font-light mt-2.5">{{ filmData.description }}</p>
                     </div>
 
                     <div v-if="filmData.people">
@@ -119,11 +140,11 @@ function peopleEditSwitch() {
                                 </div>
 
                                 <div class="font-roboto">
-                                    <p class="font-light italic leading-3">{{ personRole(person.role) }}</p>
+                                    <p class="font-light leading-3 text-sm">{{ personRole(person.role) }}</p>
                                     <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{
                                             person.person?.name
                                         }}</p>
-                                    <p class="leading-4 line-clamp-1">{{ person.role_details }}</p>
+                                    <p class="leading-4 line-clamp-1 text-sm mt-0.5">{{ person.role_details }}</p>
                                 </div>
                             </div>
                         </div>

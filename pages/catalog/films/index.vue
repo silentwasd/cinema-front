@@ -8,6 +8,11 @@ import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmPersonResource from "~/resources/FilmPersonResource";
 import {PersonRole} from "~/types/enums/PersonRole";
 import PersonRepository from "~/repos/PersonRepository";
+import GenreRepository from "~/repos/management/GenreRepository";
+import CountryRepository from "~/repos/management/CountryRepository";
+import type GenreResource from "~/resources/management/GenreResource";
+import type CountryResource from "~/resources/management/CountryResource";
+import useMultiQuery from "~/composables/use-multi-query";
 
 definePageMeta({
     middleware: 'auth',
@@ -32,17 +37,23 @@ useSeoMeta({
 const repo = new FilmRepository();
 
 const format    = ref<FilmFormat | undefined>(route.query.format ? (route.query.format as FilmFormat) : undefined);
-const directors = ref<number[]>((((Array.isArray(route.query['directors[]']) ? route.query['directors[]'] : (route.query['directors[]'] ? [route.query['directors[]']] : [])) as string[]) ?? []).map(item => parseInt(item)));
-const actors    = ref<number[]>((((Array.isArray(route.query['actors[]']) ? route.query['actors[]'] : (route.query['actors[]'] ? [route.query['actors[]']] : [])) as string[]) ?? []).map(item => parseInt(item)));
+const directors = useMultiQuery('directors');
+const actors    = useMultiQuery('actors');
+const genres    = useMultiQuery('genres')
+const countries = useMultiQuery('countries');
 
 const {name, page, perPage, sort, clearFilters} = useTabler('films', () => ({
     format   : format.value,
     directors: directors.value,
-    actors   : actors.value
+    actors   : actors.value,
+    genres   : genres.value,
+    countries: countries.value
 }), () => {
     format.value    = undefined;
     directors.value = [];
     actors.value    = [];
+    genres.value    = [];
+    countries.value = [];
 });
 
 const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Film>>(() => ({
@@ -52,6 +63,8 @@ const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Fi
     format        : format.value,
     directors     : directors.value,
     actors        : actors.value,
+    genres        : genres.value,
+    countries     : countries.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction
 }));
@@ -68,14 +81,13 @@ let columns = [
         sortable: true,
     },
     {
-        key     : 'format',
-        label   : 'Формат',
-        sortable: true
-    },
-    {
         key     : 'release_date',
         label   : 'Дата выхода',
         sortable: true
+    },
+    {
+        key  : 'genres',
+        label: 'Жанры'
     },
     {
         key  : 'directors',
@@ -118,11 +130,24 @@ const ratingRow = ref<Film>();
 
 watch(ratingRow, () => refresh());
 
+watch(editRow, (value: Film | undefined) => {
+    if (!value || !value.id)
+        return;
+
+    if (!editRow.value)
+        return;
+
+    editRow.value.genres    = value.genres?.map(genre => (genre as GenreResource).id) ?? [];
+    editRow.value.countries = value.countries?.map(country => (country as CountryResource).id) ?? [];
+});
+
 function makeResource(): Film {
     return {
-        id    : 0,
-        name  : '',
-        format: FilmFormat.Film
+        id       : 0,
+        name     : '',
+        format   : FilmFormat.Film,
+        genres   : [],
+        countries: []
     };
 }
 
@@ -170,6 +195,16 @@ const filmWatcherRepo = new FilmWatcherRepository();
                                       v-model="actors"/>
 
                 <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
+
+                <UiRepoSearchSelectId :repo="new GenreRepository()"
+                                      placeholder="Фильтр по жанрам"
+                                      multiple
+                                      v-model="genres"/>
+
+                <UiRepoSearchSelectId :repo="new CountryRepository()"
+                                      placeholder="Фильтр по странам"
+                                      multiple
+                                      v-model="countries"/>
             </template>
 
             <template #actions>
@@ -189,12 +224,23 @@ const filmWatcherRepo = new FilmWatcherRepository();
 
                     <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
 
-                    <p>{{ row.name.length > 40 ? row.name.slice(0, 40) + '...' : row.name }}</p>
+                    <div>
+                        <p class="leading-4 font-semibold line-clamp-1 text-wrap">
+                            {{ row.name }}
+                        </p>
+
+                        <p class="text-xs leading-4 line-clamp-1 text-wrap">
+                            {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
+                            <span v-if="row.countries.length > 0">({{ row.countries.map((country: CountryResource) => country.name).join(', ') }})</span>
+                        </p>
+                    </div>
                 </NuxtLink>
             </template>
 
-            <template #format-data="{row}">
-                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
+            <template #genres-data="{row}">
+                <p class="line-clamp-2 text-wrap max-w-[100px] leading-4">
+                    {{ row.genres.map((genre: GenreResource) => genre.name).join(', ') }}
+                </p>
             </template>
 
             <template #release_date-data="{row}">
@@ -294,6 +340,32 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 <UInput type="date"
                         :model-value="state.release_date ? undater(state.release_date) : null"
                         @update:model-value="state.release_date = dater($event)"/>
+            </UFormGroup>
+
+            <UFormGroup label="Жанры" name="genres">
+                <UiRepoSearchSelectId :repo="new GenreRepository()"
+                                      placeholder="Выберите жанры из списка"
+                                      multiple
+                                      v-model="state.genres">
+                    <template v-if="state.genres.length > 0" #label="{options}">
+                        {{
+                            state.genres.map(genre => options.find(option => genre == option.id)?.name ?? genre).join(', ')
+                        }}
+                    </template>
+                </UiRepoSearchSelectId>
+            </UFormGroup>
+
+            <UFormGroup label="Страны" name="countries">
+                <UiRepoSearchSelectId :repo="new CountryRepository()"
+                                      placeholder="Выберите страны из списка"
+                                      multiple
+                                      v-model="state.countries">
+                    <template v-if="state.countries.length > 0" #label="{options}">
+                        {{
+                            state.countries.map(country => options.find(option => country == option.id)?.name ?? country).join(', ')
+                        }}
+                    </template>
+                </UiRepoSearchSelectId>
             </UFormGroup>
 
             <UFormGroup label="Описание" name="description">

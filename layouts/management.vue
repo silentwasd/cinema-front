@@ -37,6 +37,19 @@ const nav = computed(() => [{
     to     : '/catalog/people',
     visible: profile.value
 }, {
+    label   : 'Справочники',
+    icon    : 'i-heroicons-inbox-stack-20-solid',
+    children: [{
+        label: 'Жанры',
+        icon : 'i-heroicons-fire-16-solid',
+        to   : '/catalog/genres'
+    }, {
+        label: 'Страны',
+        icon : 'i-heroicons-flag-20-solid',
+        to   : '/catalog/countries'
+    }],
+    visible : profile.value?.role == UserRole.Admin
+}, {
     label  : 'Производство',
     icon   : 'i-heroicons-light-bulb-solid',
     to     : '/catalog/cinema',
@@ -59,8 +72,6 @@ const nav = computed(() => [{
             </template>
 
             <template #right>
-                <UColorModeButton/>
-
                 <UButton icon="i-heroicons-wifi-20-solid"
                          variant="link"
                          color="gray"

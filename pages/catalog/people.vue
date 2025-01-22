@@ -2,6 +2,9 @@
 import PersonRepository from "~/repos/PersonRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
 import type PersonResource from "~/resources/PersonResource";
+import CountryRepository from "~/repos/management/CountryRepository";
+import useMultiQuery from "~/composables/use-multi-query";
+import {PersonRole} from "~/types/enums/PersonRole";
 
 definePageMeta({
     middleware: 'auth',
@@ -9,6 +12,7 @@ definePageMeta({
 });
 
 const config = useRuntimeConfig();
+const route  = useRoute();
 
 useSeoMeta({
     title        : 'ВКинопоиск',
@@ -22,15 +26,26 @@ useSeoMeta({
     ogSiteName   : 'ВКинопоиск'
 });
 
-const {name, page, perPage, sort, clearFilters} = useTabler('people');
+const role      = ref<PersonRole | undefined>(route.query.role ? (route.query.role as PersonRole) : undefined);
+const countries = useMultiQuery('countries');
+
+const {name, page, perPage, sort, clearFilters} = useTabler('people', () => ({
+    role     : role.value,
+    countries: countries.value
+}), () => {
+    role.value      = undefined;
+    countries.value = [];
+});
 
 const personRepo                      = new PersonRepository();
 const {data: people, status, refresh} = await personRepo.lazyList<PaginatedCollection<PersonResource>>(() => ({
     name          : name.value,
     page          : page.value,
     per_page      : perPage.value,
+    countries     : countries.value,
     sort_column   : sort.value.column,
-    sort_direction: sort.value.direction
+    sort_direction: sort.value.direction,
+    ...role.value ? {role: role.value} : {}
 }));
 
 const columns = [
@@ -45,6 +60,19 @@ const columns = [
         sortable: true
     },
     {
+        key  : 'country.name',
+        label: 'Страна'
+    },
+    {
+        key     : 'films_count',
+        label   : 'Фильмы',
+        sortable: true
+    },
+    {
+        key  : 'roles',
+        label: 'Роли'
+    },
+    {
         key: 'actions'
     }
 ];
@@ -53,11 +81,22 @@ const editRow  = ref<PersonResource>();
 const removing = ref<{ [key: string]: boolean }>({});
 const toast    = useToast();
 
+watch(editRow, value => {
+    if (!value || !value.id)
+        return;
+
+    if (!editRow.value)
+        return;
+
+    editRow.value.country_id = value.country?.id ?? null;
+});
+
 function makeResource(): PersonResource {
     return {
-        id   : 0,
-        name : '',
-        photo: null
+        id        : 0,
+        name      : '',
+        photo     : null,
+        country_id: null
     };
 }
 
@@ -102,7 +141,16 @@ async function save(state: any) {
             <template #filters>
                 <UiTableSearch v-model="name"/>
                 <UiTablePerPage v-model="perPage"/>
+                <UiTablePersonRole placeholder="Фильтр по роли"
+                                   v-model="role"/>
                 <UiTableClearFilters @clear="clearFilters"/>
+            </template>
+
+            <template #selected>
+                <UiRepoSearchSelectId :repo="new CountryRepository()"
+                                      placeholder="Фильтр по странам"
+                                      multiple
+                                      v-model="countries"/>
             </template>
 
             <template #actions>
@@ -123,6 +171,15 @@ async function save(state: any) {
 
                     <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
                 </div>
+            </template>
+
+            <template #roles-data="{row}">
+                {{
+                    row.roles.map((role: PersonRole) => ({
+                        [PersonRole.Director]: 'Режиссёр',
+                        [PersonRole.Actor]   : 'Актёр'
+                    }[role])).join(', ')
+                }}
             </template>
 
             <template #actions-data="{row}">
@@ -158,6 +215,13 @@ async function save(state: any) {
 
             <UFormGroup label="Фото" name="photo">
                 <UInput type="file" @input="state.photo = $event.target.files[0]"/>
+            </UFormGroup>
+
+            <UFormGroup label="Страна" name="country_id">
+                <UiRepoSearchSelectId :repo="new CountryRepository()"
+                                      placeholder="Выберите страну из списка"
+                                      v-model="state.country_id">
+                </UiRepoSearchSelectId>
             </UFormGroup>
         </template>
     </ModalEditModel>

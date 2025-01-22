@@ -3,6 +3,12 @@ import FilmWatcherRepository from "~/repos/FilmWatcherRepository";
 import type PaginatedCollection from "~/types/PaginatedCollection";
 import type FilmWatcher from "~/resources/FilmWatcher";
 import {FilmWatchStatus} from "~/types/enums/FilmWatchStatus";
+import PersonRepository from "~/repos/PersonRepository";
+import {PersonRole} from "~/types/enums/PersonRole";
+import GenreRepository from "~/repos/management/GenreRepository";
+import CountryRepository from "~/repos/management/CountryRepository";
+import {FilmFormat} from "~/types/enums/FilmFormat";
+import useMultiQuery from "~/composables/use-multi-query";
 
 definePageMeta({
     middleware: 'auth',
@@ -25,11 +31,29 @@ useSeoMeta({
 });
 
 const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
+const reaction    = ref<number | undefined>(route.query.reaction ? parseInt(route.query.reaction as string) : undefined);
+const format      = ref<FilmFormat | undefined>(route.query.format ? (route.query.format as FilmFormat) : undefined);
+const directors   = useMultiQuery('directors');
+const actors      = useMultiQuery('actors');
+const genres      = useMultiQuery('genres')
+const countries   = useMultiQuery('countries');
 
 const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () => ({
-    status: watchStatus.value
+    status   : watchStatus.value,
+    reaction : reaction.value,
+    format   : format.value,
+    directors: directors.value,
+    actors   : actors.value,
+    genres   : genres.value,
+    countries: countries.value
 }), () => {
     watchStatus.value = undefined;
+    reaction.value    = undefined;
+    format.value      = undefined;
+    directors.value   = [];
+    actors.value      = [];
+    genres.value      = [];
+    countries.value   = [];
 });
 
 const filmWatcherRepo                       = new FilmWatcherRepository();
@@ -37,9 +61,15 @@ const {data: filmWatchers, status, refresh} = await filmWatcherRepo.lazyList<Pag
     name          : name.value,
     page          : page.value,
     per_page      : perPage.value,
+    format        : format.value,
+    directors     : directors.value,
+    actors        : actors.value,
+    genres        : genres.value,
+    countries     : countries.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction,
-    ...watchStatus.value ? {watch_status: watchStatus.value} : {}
+    ...watchStatus.value ? {watch_status: watchStatus.value} : {},
+    ...reaction.value !== undefined ? {reaction: reaction.value} : {}
 }));
 
 const columns = [
@@ -108,8 +138,35 @@ async function remove(watcher: FilmWatcher) {
                 <UiTablePerPage v-model="perPage"/>
                 <UiTableWatcherStatus placeholder="Статус просмотра"
                                       v-model="watchStatus"/>
+                <UiTableReaction v-model="reaction"/>
                 <UiTableClearFilters @clear="clearFilters"/>
             </template>
+
+            <template #selected>
+                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Director)"
+                                      placeholder="Фильтр по режиссёрам"
+                                      multiple
+                                      v-model="directors"/>
+
+                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Actor)"
+                                      placeholder="Фильтр по актёрам"
+                                      multiple
+                                      v-model="actors"/>
+
+                <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
+
+                <UiRepoSearchSelectId :repo="new GenreRepository()"
+                                      placeholder="Фильтр по жанрам"
+                                      multiple
+                                      v-model="genres"/>
+
+                <UiRepoSearchSelectId :repo="new CountryRepository()"
+                                      placeholder="Фильтр по странам"
+                                      multiple
+                                      v-model="countries"/>
+            </template>
+
+            <template #actions></template>
 
             <template #film.name-data="{row}">
                 <NuxtLink class="flex items-center gap-2.5 hover:underline underline-offset-2"

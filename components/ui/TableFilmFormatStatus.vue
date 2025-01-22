@@ -11,7 +11,6 @@ const filmFormatOptions = [
 
 <template>
     <USelectMenu :options="filmFormatOptions"
-                 class="w-full md:w-auto"
                  value-attribute="value"/>
 </template>
 
