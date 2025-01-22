@@ -219,10 +219,10 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 <NuxtLink class="flex items-center gap-2.5 hover:underline"
                           :to="`/catalog/films/${row.id}`">
                     <div v-if="row.cover"
-                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
+                         class="bg-no-repeat bg-cover bg-center rounded w-8 h-8 shrink-0"
                          :style="`background-image: url(${config.public.storageUrl}/${row.cover})`"></div>
 
-                    <UIcon v-else name="i-heroicons-film" class="w-8 h-8"/>
+                    <UIcon v-else name="i-heroicons-film" class="w-8 h-8 shrink-0"/>
 
                     <div>
                         <p class="leading-4 font-semibold line-clamp-1 text-wrap">
