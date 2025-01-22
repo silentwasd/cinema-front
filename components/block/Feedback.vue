@@ -3,13 +3,14 @@ import FeedbackRepository from "~/repos/FeedbackRepository";
 import type FeedbackResource from "~/resources/FeedbackResource";
 
 const props = defineProps<{
-    filmId: number
+    filmId: number,
+    items: FeedbackResource[],
+    refresh: () => Promise<void>
 }>();
 
 const {state: profile} = useProfile();
 
 const feedbackRepo              = new FeedbackRepository(props.filmId);
-const {data: feedback, refresh} = await feedbackRepo.list(`film.${props.filmId}.feedback`);
 
 const add        = ref<boolean>(false);
 const text       = ref<string>('');
@@ -28,7 +29,7 @@ async function publish() {
             await feedbackRepo.store({text: text.value, reaction: reaction.value});
 
         add.value = false;
-        await refresh();
+        await props.refresh();
     } catch (e: any) {
         toast.add({
             title      : 'Ошибка',
@@ -113,7 +114,7 @@ watch(add, value => {
                      label="Оставить отзыв"
                      color="gray"
                      icon="i-heroicons-pencil-square-solid"
-                     :disabled="!!feedback?.data.find(item => item.user?.id == profile?.id)"
+                     :disabled="!!items.find(item => item.user?.id == profile?.id)"
                      @click="updateId = undefined; add = true"/>
         </div>
 
@@ -124,9 +125,9 @@ watch(add, value => {
                      @click="backAfterLogin()"/>
         </div>
 
-        <div v-if="feedback?.data"
+        <div v-if="items"
              class="flex flex-col gap-2.5">
-            <UTooltip v-for="item in feedback?.data ?? []"
+            <UTooltip v-for="item in items"
                       class="block"
                       :class="{'cursor-pointer': profile?.id == item.user?.id}"
                       :text="profile?.id == item.user?.id ? 'Кликните, чтобы изменить' : ''"

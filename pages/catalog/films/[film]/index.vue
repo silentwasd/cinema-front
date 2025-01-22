@@ -6,6 +6,7 @@ import {UserRole} from "~/types/enums/UserRole";
 import {PersonRole} from "~/types/enums/PersonRole";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
+import FeedbackRepository from "~/repos/FeedbackRepository";
 
 definePageMeta({
     layout: 'management'
@@ -49,6 +50,12 @@ function peopleEditSwitch() {
     if (!peopleEdit.value)
         refresh();
 }
+
+const feedbackRepo = new FeedbackRepository(filmId);
+const {
+          data   : feedback,
+          refresh: refreshFeedback
+      }            = await feedbackRepo.list(`film.${filmId}.feedback`);
 </script>
 
 <template>
@@ -62,7 +69,11 @@ function peopleEditSwitch() {
                              :alt="filmData.name"
                              class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
 
+                        <BlockReactions v-if="(feedback?.data ?? []).filter(item => item.reaction != 0).length > 0"
+                                        :items="feedback?.data ?? []"/>
+
                         <LazyUiWatcherStatusCreateOrUpdate v-if="profile" :film-id="filmData.id"/>
+
                         <UButton v-else
                                  color="gray"
                                  label="В мои фильмы"
@@ -82,33 +93,41 @@ function peopleEditSwitch() {
                     <div class="flex flex-col">
                         <h1 class="font-black text-4xl leading-9">{{ filmData.name }}</h1>
 
-                        <div class="flex flex-wrap text-xl font-medium font-sans">
-                            <p>{{ filmFormat(filmData.format) }}</p>
-
-                            <p v-if="filmData.release_date" class="has-dot">
-                                <NuxtTime :datetime="filmData.release_date" year="numeric"/>
-                            </p>
-                        </div>
-
-                        <table v-if="(filmData.genres ?? []).length > 0 || (filmData.countries ?? []).length > 0"
-                               class="mt-2.5 text-lg">
+                        <table class="mt-2.5 text-lg">
                             <tbody>
-                            <tr v-if="(filmData.genres ?? []).length > 0">
-                                <td>Жанр</td>
+                            <tr>
+                                <td class="w-[150px] font-medium">Формат</td>
+                                <td>{{ filmFormat(filmData.format) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">Дата выхода</td>
                                 <td>
-                                    {{ filmData.genres?.map((genre, index) => index == 0 ? (genre as GenreResource).name : (genre as GenreResource).name.toLowerCase())?.join(', ') }}
+                                    <NuxtTime :datetime="filmData.release_date"/>
+                                </td>
+                            </tr>
+                            <tr v-if="(filmData.genres ?? []).length > 0">
+                                <td class="font-medium">Жанр</td>
+                                <td>
+                                    {{
+                                        filmData.genres?.map((genre, index) => index == 0 ? (genre as GenreResource).name : (genre as GenreResource).name.toLowerCase())?.join(', ')
+                                    }}
                                 </td>
                             </tr>
                             <tr v-if="(filmData.countries ?? []).length > 0">
-                                <td>Страна</td>
+                                <td class="font-medium">Страна</td>
                                 <td>
-                                    {{ filmData.countries?.map((country) => (country as CountryResource).name)?.join(', ') }}
+                                    {{
+                                        filmData.countries?.map((country) => (country as CountryResource).name)?.join(', ')
+                                    }}
                                 </td>
                             </tr>
                             </tbody>
                         </table>
 
-                        <p class="text-xl font-light mt-2.5">{{ filmData.description }}</p>
+                        <p v-for="p in filmData.description?.replaceAll('\r', '')?.split('\n') ?? []"
+                           class="text-xl font-light mt-2.5">
+                            {{ p }}
+                        </p>
                     </div>
 
                     <div v-if="filmData.people">
@@ -141,9 +160,9 @@ function peopleEditSwitch() {
 
                                 <div class="font-roboto">
                                     <p class="font-light leading-3 text-sm">{{ personRole(person.role) }}</p>
-                                    <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">{{
-                                            person.person?.name
-                                        }}</p>
+                                    <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">
+                                        {{ person.person?.name }}
+                                    </p>
                                     <p class="leading-4 line-clamp-1 text-sm mt-0.5">{{ person.role_details }}</p>
                                 </div>
                             </div>
@@ -161,7 +180,7 @@ function peopleEditSwitch() {
                         <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
                     </div>
 
-                    <BlockFeedback :film-id="filmData.id"/>
+                    <BlockFeedback :film-id="filmId" :items="feedback?.data ?? []" :refresh="refreshFeedback"/>
                 </div>
             </div>
         </UContainer>
