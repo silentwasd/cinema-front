@@ -134,8 +134,8 @@ async function save(state: any) {
 
     <ModalEditModel v-model="editRow"
                     :save="save">
-        <template #create-title>Новый жанр</template>
-        <template #edit-title="{state}">Жанр #{{ state.id }}</template>
+        <template #create-title>Новая страна</template>
+        <template #edit-title="{state}">Страна #{{ state.id }}</template>
 
         <template #default="{state}">
             <UFormGroup label="Наименование" name="name" required>
