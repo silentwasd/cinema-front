@@ -190,11 +190,11 @@ async function save(state: any) {
             </template>
 
             <template #birth_date-data="{row}">
-                {{ row.birth_date ? dater(row.birth_date) : '' }}
+                <NuxtTime v-if="row.birth_date" :datetime="row.birth_date" date-style="medium"/>
             </template>
 
             <template #death_date-data="{row}">
-                {{ row.death_date ? dater(row.death_date) : '' }}
+                <NuxtTime v-if="row.death_date" :datetime="row.death_date" date-style="medium"/>
             </template>
 
             <template #roles-data="{row}">
