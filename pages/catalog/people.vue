@@ -180,9 +180,9 @@ async function save(state: any) {
                     <UIcon v-else name="i-heroicons-user-circle" class="w-8 h-8"/>
 
                     <div>
-                        <p class="line-clamp-1 text-wrap font-semibold">{{ row.name }}</p>
+                        <p class="line-clamp-1 text-wrap font-semibold leading-4">{{ row.name }}</p>
                         <p v-if="row.original_name"
-                           class="line-clamp-1 text-wrap text-xs">
+                           class="line-clamp-1 text-wrap text-xs leading-4">
                             {{ row.original_name }}
                         </p>
                     </div>
