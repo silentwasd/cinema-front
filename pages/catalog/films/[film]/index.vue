@@ -70,6 +70,11 @@ const {
                              :alt="filmData.name"
                              class="block rounded-lg w-full sm:max-w-[250px] sm:max-h-[400px] border dark:border-gray-800"/>
 
+                        <div v-else
+                             class="flex items-center justify-center rounded-lg w-full sm:w-[250px] h-[400px] border dark:border-gray-800">
+                            <UIcon name="i-heroicons-film" class="text-8xl"/>
+                        </div>
+
                         <BlockReactions v-if="(feedback?.data ?? []).filter(item => item.reaction != 0).length > 0"
                                         :items="feedback?.data ?? []"/>
 
@@ -103,7 +108,7 @@ const {
                                 <td class="w-[150px] font-medium">Формат</td>
                                 <td>{{ filmFormat(filmData.format) }}</td>
                             </tr>
-                            <tr>
+                            <tr v-if="filmData.release_date">
                                 <td class="font-medium">Дата выхода</td>
                                 <td>
                                     <NuxtTime :datetime="filmData.release_date"/>
