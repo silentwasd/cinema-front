@@ -47,6 +47,10 @@ const nav = computed(() => [{
         label: 'Страны',
         icon : 'i-heroicons-flag-20-solid',
         to   : '/catalog/countries'
+    }, {
+        label: 'Теги',
+        icon : 'i-heroicons-hashtag-solid',
+        to   : '/catalog/tags'
     }],
     visible : profile.value?.role == UserRole.Admin
 }, {

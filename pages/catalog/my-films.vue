@@ -9,6 +9,7 @@ import GenreRepository from "~/repos/management/GenreRepository";
 import CountryRepository from "~/repos/management/CountryRepository";
 import {FilmFormat} from "~/types/enums/FilmFormat";
 import useMultiQuery from "~/composables/use-multi-query";
+import TagRepository from "~/repos/management/TagRepository";
 
 definePageMeta({
     middleware: 'auth',
@@ -37,6 +38,7 @@ const directors   = useMultiQuery('directors');
 const actors      = useMultiQuery('actors');
 const genres      = useMultiQuery('genres')
 const countries   = useMultiQuery('countries');
+const tags        = useMultiQuery('tags');
 
 const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () => ({
     status   : watchStatus.value,
@@ -45,7 +47,8 @@ const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () 
     directors: directors.value,
     actors   : actors.value,
     genres   : genres.value,
-    countries: countries.value
+    countries: countries.value,
+    tags     : tags.value
 }), () => {
     watchStatus.value = undefined;
     reaction.value    = undefined;
@@ -54,6 +57,7 @@ const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () 
     actors.value      = [];
     genres.value      = [];
     countries.value   = [];
+    tags.value        = [];
 });
 
 const filmWatcherRepo                       = new FilmWatcherRepository();
@@ -66,6 +70,7 @@ const {data: filmWatchers, status, refresh} = await filmWatcherRepo.lazyList<Pag
     actors        : actors.value,
     genres        : genres.value,
     countries     : countries.value,
+    tags          : tags.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction,
     ...watchStatus.value ? {watch_status: watchStatus.value} : {},
@@ -164,6 +169,11 @@ async function remove(watcher: FilmWatcher) {
                                       placeholder="Фильтр по странам"
                                       multiple
                                       v-model="countries"/>
+
+                <UiRepoSearchSelectId :repo="new TagRepository()"
+                                      placeholder="Фильтр по тегам"
+                                      multiple
+                                      v-model="tags"/>
             </template>
 
             <template #actions></template>
@@ -190,7 +200,7 @@ async function remove(watcher: FilmWatcher) {
             </template>
 
             <template #film.format-data="{row}">
-                {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.film.format] }}
+                {{ filmFormat(row.film.format) }}
             </template>
 
             <template #film.release_date-data="{row}">

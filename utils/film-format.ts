@@ -8,5 +8,9 @@ export default function (format: FilmFormat) {
             return 'Мини-сериал';
         case FilmFormat.Series:
             return 'Сериал';
+        case FilmFormat.Cartoon:
+            return 'Мультфильм';
+        case FilmFormat.CartoonSeries:
+            return 'Мультсериал';
     }
 }

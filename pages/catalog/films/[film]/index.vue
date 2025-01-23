@@ -7,6 +7,7 @@ import {PersonRole} from "~/types/enums/PersonRole";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
 import FeedbackRepository from "~/repos/FeedbackRepository";
+import type TagResource from "~/resources/management/TagResource";
 
 definePageMeta({
     layout: 'management'
@@ -92,6 +93,9 @@ const {
                 <div class="flex flex-col font-roboto gap-10 mt-2.5 grow">
                     <div class="flex flex-col">
                         <h1 class="font-black text-4xl leading-9">{{ filmData.name }}</h1>
+                        <h3 v-if="filmData.original_name" class="font-medium text-xl text-gray-400 leading-9">
+                            {{ filmData.original_name }}
+                        </h3>
 
                         <table class="mt-2.5 text-lg">
                             <tbody>
@@ -118,6 +122,14 @@ const {
                                 <td>
                                     {{
                                         filmData.countries?.map((country) => (country as CountryResource).name)?.join(', ')
+                                    }}
+                                </td>
+                            </tr>
+                            <tr v-if="(filmData.tags ?? []).length > 0">
+                                <td class="font-medium">Теги</td>
+                                <td>
+                                    {{
+                                        filmData.tags?.map((tag) => (tag as TagResource).name)?.join(', ')
                                     }}
                                 </td>
                             </tr>

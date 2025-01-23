@@ -53,7 +53,7 @@ function close() {
 <template>
     <UModal :model-value="!!model" @update:model-value="close">
         <UForm ref="form" :state="state" @submit="save">
-            <UCard :ui="{ring: ''}">
+            <UCard :ui="{ring: '', body: {padding: 'p-5 sm:p-5'}}">
                 <template #header>
                     <div class="flex flex-row">
                         <h3 class="font-semibold text-lg basis-full">
@@ -66,7 +66,7 @@ function close() {
                     </div>
                 </template>
 
-                <div class="flex flex-col gap-5">
+                <div class="flex flex-col gap-2.5">
                     <slot name="default" :state="state"/>
                 </div>
 

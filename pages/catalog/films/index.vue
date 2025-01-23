@@ -13,6 +13,8 @@ import CountryRepository from "~/repos/management/CountryRepository";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
 import useMultiQuery from "~/composables/use-multi-query";
+import TagRepository from "~/repos/management/TagRepository";
+import type TagResource from "~/resources/management/TagResource";
 
 definePageMeta({
     middleware: 'auth',
@@ -41,19 +43,22 @@ const directors = useMultiQuery('directors');
 const actors    = useMultiQuery('actors');
 const genres    = useMultiQuery('genres')
 const countries = useMultiQuery('countries');
+const tags      = useMultiQuery('tags');
 
 const {name, page, perPage, sort, clearFilters} = useTabler('films', () => ({
     format   : format.value,
     directors: directors.value,
     actors   : actors.value,
     genres   : genres.value,
-    countries: countries.value
+    countries: countries.value,
+    tags     : tags.value
 }), () => {
     format.value    = undefined;
     directors.value = [];
     actors.value    = [];
     genres.value    = [];
     countries.value = [];
+    tags.value      = [];
 });
 
 const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Film>>(() => ({
@@ -65,6 +70,7 @@ const {data: rows, refresh, status} = await repo.lazyList<PaginatedCollection<Fi
     actors        : actors.value,
     genres        : genres.value,
     countries     : countries.value,
+    tags          : tags.value,
     sort_column   : sort.value.column,
     sort_direction: sort.value.direction
 }));
@@ -139,15 +145,18 @@ watch(editRow, (value: Film | undefined) => {
 
     editRow.value.genres    = value.genres?.map(genre => (genre as GenreResource).id) ?? [];
     editRow.value.countries = value.countries?.map(country => (country as CountryResource).id) ?? [];
+    editRow.value.tags      = value.tags?.map(tag => (tag as TagResource).id) ?? [];
 });
 
 function makeResource(): Film {
     return {
-        id       : 0,
-        name     : '',
-        format   : FilmFormat.Film,
-        genres   : [],
-        countries: []
+        id           : 0,
+        name         : '',
+        original_name: '',
+        format       : FilmFormat.Film,
+        genres       : [],
+        countries    : [],
+        tags         : []
     };
 }
 
@@ -158,11 +167,10 @@ const watchStatusOptions = [
     {label: 'Пропущено', value: FilmWatchStatus.Dropped},
 ];
 
-const formatOptions = [
-    {label: 'Фильм', value: FilmFormat.Film},
-    {label: 'Мини-сериал', value: FilmFormat.MiniSeries},
-    {label: 'Сериал', value: FilmFormat.Series}
-];
+const formatOptions = Object.keys(FilmFormat).map(key => ({
+    label: filmFormat(FilmFormat[key]),
+    value: FilmFormat[key]
+}));
 
 const filmWatcherRepo = new FilmWatcherRepository();
 </script>
@@ -205,6 +213,11 @@ const filmWatcherRepo = new FilmWatcherRepository();
                                       placeholder="Фильтр по странам"
                                       multiple
                                       v-model="countries"/>
+
+                <UiRepoSearchSelectId :repo="new TagRepository()"
+                                      placeholder="Фильтр по тегам"
+                                      multiple
+                                      v-model="tags"/>
             </template>
 
             <template #actions>
@@ -230,8 +243,10 @@ const filmWatcherRepo = new FilmWatcherRepository();
                         </p>
 
                         <p class="text-xs leading-4 line-clamp-1 text-wrap">
-                            {{ {film: 'Фильм', 'mini-series': 'Мини-сериал', series: 'Сериал'}[row.format] }}
-                            <span v-if="row.countries.length > 0">({{ row.countries.map((country: CountryResource) => country.name).join(', ') }})</span>
+                            {{ filmFormat(row.format) }}
+                            <span v-if="row.countries.length > 0">({{
+                                    row.countries.map((country: CountryResource) => country.name).join(', ')
+                                }})</span>
                         </p>
                     </div>
                 </NuxtLink>
@@ -326,6 +341,10 @@ const filmWatcherRepo = new FilmWatcherRepository();
                 <UInput v-model="state.name" placeholder="Джек который построил дом"/>
             </UFormGroup>
 
+            <UFormGroup label="Оригинальное наименование" name="original_name">
+                <UInput v-model="state.original_name" placeholder="The Jack Who Built The House"/>
+            </UFormGroup>
+
             <UFormGroup label="Формат" name="format" required>
                 <USelectMenu v-model="state.format"
                              :options="formatOptions"
@@ -363,6 +382,19 @@ const filmWatcherRepo = new FilmWatcherRepository();
                     <template v-if="state.countries.length > 0" #label="{options}">
                         {{
                             state.countries.map(country => options.find(option => country == option.id)?.name ?? country).join(', ')
+                        }}
+                    </template>
+                </UiRepoSearchSelectId>
+            </UFormGroup>
+
+            <UFormGroup label="Теги" name="tags">
+                <UiRepoSearchSelectId :repo="new TagRepository()"
+                                      placeholder="Выберите теги из списка"
+                                      multiple
+                                      v-model="state.tags">
+                    <template v-if="state.tags.length > 0" #label="{options}">
+                        {{
+                            state.tags.map(tag => options.find(option => tag == option.id)?.name ?? tag).join(', ')
                         }}
                     </template>
                 </UiRepoSearchSelectId>

@@ -60,6 +60,16 @@ const columns = [
         sortable: true
     },
     {
+        key     : 'birth_date',
+        label   : 'Дата рождения',
+        sortable: true
+    },
+    {
+        key     : 'death_date',
+        label   : 'Дата смерти',
+        sortable: true
+    },
+    {
         key  : 'country.name',
         label: 'Страна'
     },
@@ -169,17 +179,26 @@ async function save(state: any) {
 
                     <UIcon v-else name="i-heroicons-user-circle" class="w-8 h-8"/>
 
-                    <p>{{ row.name.length > 80 ? row.name.slice(0, 80) + '...' : row.name }}</p>
+                    <div>
+                        <p class="line-clamp-1 text-wrap font-semibold">{{ row.name }}</p>
+                        <p v-if="row.original_name"
+                           class="line-clamp-1 text-wrap text-xs">
+                            {{ row.original_name }}
+                        </p>
+                    </div>
                 </div>
             </template>
 
+            <template #birth_date-data="{row}">
+                {{ row.birth_date ? dater(row.birth_date) : '' }}
+            </template>
+
+            <template #death_date-data="{row}">
+                {{ row.death_date ? dater(row.death_date) : '' }}
+            </template>
+
             <template #roles-data="{row}">
-                {{
-                    row.roles.map((role: PersonRole) => ({
-                        [PersonRole.Director]: 'Режиссёр',
-                        [PersonRole.Actor]   : 'Актёр'
-                    }[role])).join(', ')
-                }}
+                {{ row.roles.map((role: PersonRole) => personRole(role)).join(', ') }}
             </template>
 
             <template #actions-data="{row}">
@@ -209,8 +228,24 @@ async function save(state: any) {
         <template #edit-title="{state}">Человек #{{ state.id }}</template>
 
         <template #default="{state}">
-            <UFormGroup label="Наименование" name="name" required>
+            <UFormGroup label="Полное имя" name="name" required>
                 <UInput v-model="state.name" placeholder="Стэнли Кубрик"/>
+            </UFormGroup>
+
+            <UFormGroup label="Оригинальное полное имя" name="original_name" required>
+                <UInput v-model="state.original_name" placeholder="Stanley Kubrick"/>
+            </UFormGroup>
+
+            <UFormGroup label="Дата рождения" name="birth_date">
+                <UInput type="date"
+                        :model-value="state.birth_date ? undater(state.birth_date) : null"
+                        @update:model-value="state.birth_date = dater($event)"/>
+            </UFormGroup>
+
+            <UFormGroup label="Дата смерти" name="death_date">
+                <UInput type="date"
+                        :model-value="state.death_date ? undater(state.death_date) : null"
+                        @update:model-value="state.death_date = dater($event)"/>
             </UFormGroup>
 
             <UFormGroup label="Фото" name="photo">

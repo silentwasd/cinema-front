@@ -3,9 +3,7 @@ import {FilmFormat} from "~/types/enums/FilmFormat";
 
 const filmFormatOptions = [
     {label: 'Любой', value: undefined},
-    {label: 'Фильм', value: FilmFormat.Film},
-    {label: 'Мини-сериал', value: FilmFormat.MiniSeries},
-    {label: 'Сериал', value: FilmFormat.Series}
+    ...Object.keys(FilmFormat).map(key => ({label: filmFormat(FilmFormat[key]), value: FilmFormat[key]}))
 ];
 </script>
 

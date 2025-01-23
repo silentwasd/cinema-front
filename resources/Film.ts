@@ -3,11 +3,13 @@ import type Rating from "~/resources/Rating";
 import type FilmPersonResource from "~/resources/FilmPersonResource";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
+import type TagResource from "~/resources/management/TagResource";
 
 export default interface Film {
     id: number;
     author_id?: number;
     name: string;
+    original_name: string | null;
     format: FilmFormat;
     cover?: string | File;
     release_date?: string;
@@ -20,4 +22,5 @@ export default interface Film {
     people?: FilmPersonResource[];
     genres?: GenreResource[] | number[];
     countries?: CountryResource[] | number[];
+    tags?: TagResource[] | number[];
 }

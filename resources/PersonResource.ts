@@ -4,6 +4,9 @@ import type {PersonRole} from "~/types/enums/PersonRole";
 export default interface PersonResource {
     id: number;
     name: string;
+    original_name: string | null;
+    birth_date: string | null;
+    death_date: string | null;
     photo: string | null;
     can_edit?: boolean;
     country?: CountryResource | null;

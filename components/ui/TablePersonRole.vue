@@ -3,8 +3,7 @@ import {PersonRole} from "~/types/enums/PersonRole";
 
 const roleOptions = [
     {label: 'Любая', value: undefined},
-    {label: 'Режиссёр', value: PersonRole.Director},
-    {label: 'Актёр', value: PersonRole.Actor}
+    ...Object.keys(PersonRole).map(key => ({label: personRole(PersonRole[key]), value: PersonRole[key]}))
 ];
 </script>
 
