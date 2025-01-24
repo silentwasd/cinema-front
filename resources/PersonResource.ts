@@ -1,5 +1,6 @@
 import type CountryResource from "~/resources/management/CountryResource";
 import type {PersonRole} from "~/types/enums/PersonRole";
+import type FilmPersonResource from "~/resources/FilmPersonResource";
 
 export default interface PersonResource {
     id: number;
@@ -13,4 +14,5 @@ export default interface PersonResource {
     country_id?: number | null;
     films_count?: number;
     roles?: PersonRole[];
+    films?: FilmPersonResource[];
 }

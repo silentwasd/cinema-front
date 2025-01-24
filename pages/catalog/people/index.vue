@@ -172,7 +172,8 @@ async function save(state: any) {
             </template>
 
             <template #name-data="{row}">
-                <div class="flex items-center gap-2.5">
+                <NuxtLink class="flex items-center gap-2.5 hover:underline"
+                          :to="`/catalog/people/${row.id}`">
                     <div v-if="row.photo"
                          class="bg-no-repeat bg-cover bg-center rounded w-8 h-8"
                          :style="`background-image: url(${fileUrl(row.photo)})`"></div>
@@ -186,7 +187,7 @@ async function save(state: any) {
                             {{ row.original_name }}
                         </p>
                     </div>
-                </div>
+                </NuxtLink>
             </template>
 
             <template #birth_date-data="{row}">

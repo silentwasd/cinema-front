@@ -43,8 +43,7 @@ useSeoMeta({
     ogSiteName: 'ВКинопоиск'
 });
 
-const peopleEdit    = ref<boolean>(false);
-const peopleDetails = ref<boolean>(false);
+const peopleEdit = ref<boolean>(false);
 
 function peopleEditSwitch() {
     peopleEdit.value = !peopleEdit.value;
@@ -62,8 +61,8 @@ const {
 
 <template>
     <UMain>
-        <UContainer class="py-2.5">
-            <div v-if="filmData" class="flex flex-col sm:flex-row gap-5 pb-5">
+        <UContainer class="py-5">
+            <div v-if="filmData" class="flex flex-col sm:flex-row gap-5">
                 <div class="shrink-0">
                     <div class="sm:sticky sm:top-20 flex flex-col gap-2.5">
                         <img v-if="filmData.cover"
@@ -96,7 +95,7 @@ const {
                     </div>
                 </div>
 
-                <div class="flex flex-col font-roboto gap-10 mt-2.5 grow">
+                <div class="flex flex-col font-roboto gap-10 grow">
                     <div class="flex flex-col">
                         <h1 class="font-black text-4xl leading-9">{{ filmData.name }}</h1>
                         <h3 v-if="filmData.original_name" class="font-medium text-xl text-gray-400 leading-9">
@@ -172,36 +171,8 @@ const {
                                         class="mt-2.5"
                                         :film-id="filmData.id"/>
 
-                        <div v-else-if="filmData.people.length > 0" class="flex flex-wrap gap-5 mt-5">
-                            <div v-for="person in filmData.people.slice(0, peopleDetails ? filmData.people?.length : 6)"
-                                 class="flex items-center gap-2.5 w-[250px]"
-                                 :key="person.id">
-                                <div v-if="person.person?.photo"
-                                     :style="`background-image: url(${fileUrl(person.person?.photo)})`"
-                                     class="block rounded-md w-[80px] h-[80px] shrink-0 bg-cover bg-center"/>
-
-                                <div v-else>
-                                    <UIcon name="i-heroicons-user-circle" class="text-7xl"/>
-                                </div>
-
-                                <div class="font-roboto">
-                                    <p class="font-light leading-3 text-sm">{{ personRole(person.role) }}</p>
-                                    <p class="text-2xl font-black line-clamp-2 leading-6 mt-0.5">
-                                        {{ person.person?.name }}
-                                    </p>
-                                    <p class="leading-4 line-clamp-1 text-sm mt-0.5">{{ person.role_details }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-if="!peopleEdit && filmData.people.length > 6" class="flex justify-center mt-2.5">
-                            <UButton
-                                :icon="peopleDetails ? 'i-heroicons-chevron-double-up' : 'i-heroicons-chevron-double-down'"
-                                color="gray"
-                                size="xl"
-                                :ui="{rounded: 'rounded-full'}"
-                                @click="peopleDetails = !peopleDetails"/>
-                        </div>
+                        <BlockPeople v-else-if="filmData.people.length > 0"
+                                     :people="filmData.people"/>
 
                         <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
                     </div>
