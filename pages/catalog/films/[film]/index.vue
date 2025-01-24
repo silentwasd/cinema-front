@@ -142,11 +142,11 @@ const {
                                 <td class="font-medium">Компания</td>
                                 <td>
                                     <template v-for="(company, index) in filmData.companies">
+                                        {{ index > 0 ? ', ' : ''}}
                                         <NuxtLink class="underline underline-offset-2 hover:text-primary-500"
                                                   :to="`/catalog/companies/${(company as CompanyResource).id}`">
                                             {{ (company as CompanyResource).name }}
                                         </NuxtLink>
-                                        {{ index == (filmData.companies ?? []).length - 1 ? ', ' : ''}}
                                     </template>
                                 </td>
                             </tr>
