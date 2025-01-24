@@ -12,9 +12,10 @@ import GenreRepository from "~/repos/management/GenreRepository";
 import CountryRepository from "~/repos/management/CountryRepository";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
-import useMultiQuery from "~/composables/use-multi-query";
 import TagRepository from "~/repos/management/TagRepository";
 import type TagResource from "~/resources/management/TagResource";
+import CompanyRepository from "~/repos/management/CompanyRepository";
+import type CompanyResource from "~/resources/management/CompanyResource";
 
 definePageMeta({
     middleware: 'auth',
@@ -146,6 +147,7 @@ watch(editRow, (value: Film | undefined) => {
     editRow.value.genres    = value.genres?.map(genre => (genre as GenreResource).id) ?? [];
     editRow.value.countries = value.countries?.map(country => (country as CountryResource).id) ?? [];
     editRow.value.tags      = value.tags?.map(tag => (tag as TagResource).id) ?? [];
+    editRow.value.companies = value.companies?.map(company => (company as CompanyResource).id) ?? [];
 });
 
 function makeResource(): Film {
@@ -156,7 +158,8 @@ function makeResource(): Film {
         format       : FilmFormat.Film,
         genres       : [],
         countries    : [],
-        tags         : []
+        tags         : [],
+        companies    : []
     };
 }
 
@@ -395,6 +398,19 @@ const filmWatcherRepo = new FilmWatcherRepository();
                     <template v-if="state.tags.length > 0" #label="{options}">
                         {{
                             state.tags.map(tag => options.find(option => tag == option.id)?.name ?? tag).join(', ')
+                        }}
+                    </template>
+                </UiRepoSearchSelectId>
+            </UFormGroup>
+
+            <UFormGroup label="Компании" name="companies">
+                <UiRepoSearchSelectId :repo="new CompanyRepository()"
+                                      placeholder="Выберите компании из списка"
+                                      multiple
+                                      v-model="state.companies">
+                    <template v-if="state.companies.length > 0" #label="{options}">
+                        {{
+                            state.companies.map(company => options.find(option => company == option.id)?.name ?? company).join(', ')
                         }}
                     </template>
                 </UiRepoSearchSelectId>

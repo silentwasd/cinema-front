@@ -36,6 +36,11 @@ const nav = computed(() => [{
     icon   : 'i-heroicons-users-20-solid',
     to     : '/catalog/people',
     visible: profile.value
+},{
+    label  : 'Компании',
+    icon   : 'i-heroicons-building-library-20-solid',
+    to     : '/catalog/companies',
+    visible: profile.value
 }, {
     label   : 'Справочники',
     icon    : 'i-heroicons-inbox-stack-20-solid',
