@@ -8,7 +8,7 @@ import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
 import FeedbackRepository from "~/repos/FeedbackRepository";
 import type TagResource from "~/resources/management/TagResource";
-import CompanyResource from "../../../../resources/management/CompanyResource";
+import type CompanyResource from "~/resources/management/CompanyResource";
 
 definePageMeta({
     layout: 'management'
@@ -140,7 +140,7 @@ const {
                                 </td>
                             </tr>
                             <tr v-if="(filmData.companies ?? []).length > 0">
-                                <td class="font-medium">Компании</td>
+                                <td class="font-medium">Компания</td>
                                 <td>
                                     {{
                                         filmData.companies?.map((company) => (company as CompanyResource).name)?.join(', ')
