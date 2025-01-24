@@ -103,7 +103,7 @@ const activeRole = ref(personData.value?.roles?.length ? personData.value.roles[
 
                             <div class="flex flex-wrap gap-5">
                                 <NuxtLink
-                                    v-for="person in (personData.films ?? []).filter(person => person.role == activeRole)"
+                                    v-for="person in (personData.films ?? []).filter(person => person.role == activeRole).toSorted((a, b) => new Date(b.film?.release_date ?? 0).getTime() - new Date(a.film?.release_date ?? 0).getTime())"
                                     class="w-[150px]"
                                     :title="person.film?.name"
                                     :to="`/catalog/films/${person.film_id}`">
