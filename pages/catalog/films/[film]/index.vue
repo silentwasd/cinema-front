@@ -141,9 +141,11 @@ const {
                             <tr v-if="(filmData.companies ?? []).length > 0">
                                 <td class="font-medium">Компания</td>
                                 <td>
-                                    {{
-                                        filmData.companies?.map((company) => (company as CompanyResource).name)?.join(', ')
-                                    }}
+                                    <NuxtLink v-for="company in filmData.companies"
+                                              class="underline underline-offset-2 hover:text-primary-500"
+                                              :to="`/catalog/companies/${(company as CompanyResource).id}`">
+                                        {{ (company as CompanyResource).name }}
+                                    </NuxtLink>
                                 </td>
                             </tr>
                             </tbody>

@@ -1,6 +1,6 @@
 import type {PersonRole} from "~/types/enums/PersonRole";
 import type PersonResource from "~/resources/PersonResource";
-import type FilmResource from "~/resources/public/FilmResource";
+import type Film from "~/resources/Film";
 
 export default interface FilmPersonResource {
     id: number;
@@ -9,5 +9,5 @@ export default interface FilmPersonResource {
     role: PersonRole;
     role_details: string | null;
     person?: PersonResource;
-    film?: FilmResource;
+    film?: Film;
 }

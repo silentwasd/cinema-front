@@ -108,6 +108,13 @@ async function save(state: any) {
                 <UiTableClearFilters @clear="clearFilters"/>
             </template>
 
+            <template #name-data="{row}">
+                <NuxtLink class="hover:underline"
+                          :to="`/catalog/companies/${row.id}`">
+                    {{ row.name }}
+                </NuxtLink>
+            </template>
+
             <template #actions>
                 <UButton icon="i-heroicons-plus"
                          color="gray"
