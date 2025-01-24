@@ -17,7 +17,7 @@ const {data: person} = await personRepo.show(`person.${personId}`, personId);
 const personData  = computed<PersonResource | null>(() => person.value?.data || null);
 const description = [
     personData.value?.roles?.map((role, index) => index == 0 ? personRole(role) : personRole(role).toLowerCase())?.join(', '),
-    'Фильмов: ' + personData.value?.films_count ?? 0
+    'Фильмов: ' + (personData.value?.films_count ?? 0)
 ].filter(item => item).join('. ');
 
 useSeoMeta({
