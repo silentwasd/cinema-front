@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import PersonRepository from "~/repos/PersonRepository";
 import type PersonResource from "~/resources/PersonResource";
-import {FilmCinemaStatus} from "~/types/enums/FilmCinemaStatus";
 
 definePageMeta({
     layout: 'management'
