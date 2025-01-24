@@ -146,7 +146,7 @@ const {
                                                   :to="`/catalog/companies/${(company as CompanyResource).id}`">
                                             {{ (company as CompanyResource).name }}
                                         </NuxtLink>
-                                        {{ index > 0 ? ', ' : ''}}
+                                        {{ index == (filmData.companies ?? []).length - 1 ? ', ' : ''}}
                                     </template>
                                 </td>
                             </tr>
