@@ -285,7 +285,7 @@ async function removeAudioVariant(audio: FilmAudioVariantResource) {
                                              @click="stop(download)"/>
 
                                     <UButton v-else
-                                             icon="i-heroicons-pause-20-solid"
+                                             icon="i-heroicons-play-20-solid"
                                              color="gray"
                                              size="xs"
                                              @click="start(download)"/>
