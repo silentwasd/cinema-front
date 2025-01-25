@@ -19,8 +19,8 @@ export default class PersonRepository extends CrudRepository<PersonResource, num
     public search(query: string, id?: any): Promise<Collection<PersonResource>> {
         return this.client.get(`${this.baseUrl}?` + querify({
             name          : query,
-            sort_column   : 'name',
-            sort_direction: 'asc',
+            sort_column   : 'films_count',
+            sort_direction: 'desc',
             model_id      : id ?? null,
             role          : this.role
         }).toString());
