@@ -54,7 +54,19 @@ async function create() {
             <td class="w-1/3">
                 <UiRepoSearchSelectId :repo="new PersonRepository()"
                                       placeholder="Выберите человека из списка"
-                                      v-model="newRecord.person_id"/>
+                                      v-model="newRecord.person_id">
+                    <template #default="{option}">
+                        <div class="flex items-center gap-2">
+                            <img :src="option.photo ? fileUrl(option.photo) : '/img/person.jpg'"
+                                 class="w-10 h-10 object-cover rounded"/>
+
+                            <div>
+                                <p class="font-medium">{{ option.name }}</p>
+                                <p class="text-xs">{{ option.roles.map(role => personRole(role)).join(', ') }}</p>
+                            </div>
+                        </div>
+                    </template>
+                </UiRepoSearchSelectId>
             </td>
 
             <td class="w-1/3">
