@@ -5,6 +5,7 @@ import type PersonResource from "~/resources/PersonResource";
 import CountryRepository from "~/repos/management/CountryRepository";
 import useMultiQuery from "~/composables/use-multi-query";
 import {PersonRole} from "~/types/enums/PersonRole";
+import {PersonSex} from "~/types/enums/PersonSex";
 
 definePageMeta({
     middleware: 'auth',
@@ -103,10 +104,14 @@ watch(editRow, value => {
 
 function makeResource(): PersonResource {
     return {
-        id        : 0,
-        name      : '',
-        photo     : null,
-        country_id: null
+        id           : 0,
+        name         : '',
+        original_name: '',
+        birth_date   : null,
+        death_date   : null,
+        sex          : null,
+        photo        : null,
+        country_id   : null
     };
 }
 
@@ -247,6 +252,20 @@ async function save(state: any) {
                 <UInput type="date"
                         :model-value="state.death_date ? undater(state.death_date) : null"
                         @update:model-value="state.death_date = dater($event)"/>
+            </UFormGroup>
+
+            <UFormGroup label="Пол" name="sex">
+                <USelectMenu :options="Object.values(PersonSex)"
+                             placeholder="Выберите пол из списка"
+                             v-model="state.sex">
+                    <template #option="{option}">
+                        {{ personSex(option) }}
+                    </template>
+
+                    <template v-if="state.sex" #label>
+                        {{ personSex(state.sex) }}
+                    </template>
+                </USelectMenu>
             </UFormGroup>
 
             <UFormGroup label="Фото" name="photo">

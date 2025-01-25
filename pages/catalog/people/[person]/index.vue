@@ -72,6 +72,12 @@ const activeRole = ref(personData.value?.roles?.length ? personData.value.roles[
                                     <NuxtTime :datetime="personData.death_date"/>
                                 </td>
                             </tr>
+                            <tr v-if="personData.sex">
+                                <td class="w-[150px] font-medium">Пол</td>
+                                <td>
+                                    <p>{{ personSex(personData.sex) }}</p>
+                                </td>
+                            </tr>
                             <tr v-if="personData.country">
                                 <td class="w-[150px] font-medium">Страна</td>
                                 <td>
