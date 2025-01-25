@@ -197,6 +197,32 @@ async function remove(download: DownloadResource) {
     }
 }
 
+async function stop(download: DownloadResource) {
+    try {
+        await downloadRepo.stop(download.id);
+        await refreshDownloads();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
+
+async function start(download: DownloadResource) {
+    try {
+        await downloadRepo.start(download.id);
+        await refreshDownloads();
+    } catch (err: any) {
+        toast.add({
+            title      : 'Ошибка',
+            description: err?.data?.message || err?.message,
+            color      : 'red'
+        });
+    }
+}
+
 async function removeVideoVariant(video: FilmVideoVariantResource) {
     try {
         const repo = new FilmVideoVariantRepository(selectedFilm.value?.data.id);
@@ -248,17 +274,31 @@ async function removeAudioVariant(audio: FilmAudioVariantResource) {
                             <UProgress :value="download.progress"/>
                             <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
 
-                            <div v-if="download.status == DownloadStatus.Seeding && !download.has_film">
+                            <div v-if="download.progress == 100">
                                 <UDivider class="pb-2 [&>div]:dark:border-gray-700"/>
 
                                 <div class="flex gap-2">
-                                    <UButton icon="i-heroicons-link-20-solid"
+                                    <UButton v-if="download.status != DownloadStatus.Stopped"
+                                             icon="i-heroicons-pause-20-solid"
+                                             color="gray"
+                                             size="xs"
+                                             @click="stop(download)"/>
+
+                                    <UButton v-else
+                                             icon="i-heroicons-pause-20-solid"
+                                             color="gray"
+                                             size="xs"
+                                             @click="start(download)"/>
+
+                                    <UButton v-if="!download.has_film"
+                                             icon="i-heroicons-link-20-solid"
                                              color="gray"
                                              label="Привязать к фильму"
                                              size="xs"
                                              @click="attachDownload = download"/>
 
-                                    <UButton icon="i-heroicons-trash-20-solid"
+                                    <UButton v-if="!download.has_film"
+                                             icon="i-heroicons-trash-20-solid"
                                              color="gray"
                                              label="Удалить"
                                              size="xs"
