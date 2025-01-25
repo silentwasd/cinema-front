@@ -209,6 +209,18 @@ async function save(state: any) {
 
             <template #actions-data="{row}">
                 <div v-if="row.can_edit" class="flex items-center justify-end gap-2.5">
+                    <template v-if="!row.sex">
+                        <UButton color="blue"
+                                 icon="i-material-symbols-male"
+                                 square
+                                 @click="personRepo.update({...row, photo: null, sex: PersonSex.Male}).then(() => refresh())"/>
+
+                        <UButton color="pink"
+                                 icon="i-material-symbols-female"
+                                 square
+                                 @click="personRepo.update({...row, photo: null, sex: PersonSex.Female}).then(() => refresh())"/>
+                    </template>
+
                     <UTooltip text="Изменить">
                         <UButton color="gray"
                                  icon="i-heroicons-pencil-solid"
