@@ -58,10 +58,10 @@ async function create() {
                     <template #default="{option}">
                         <div class="flex items-center gap-2">
                             <img :src="option.photo ? fileUrl(option.photo) : '/img/person.jpg'"
-                                 class="w-10 h-10 object-cover rounded"/>
+                                 class="w-10 h-10 object-cover rounded shrink-0"/>
 
-                            <div>
-                                <p class="font-medium">{{ option.name }}</p>
+                            <div class="grow">
+                                <p class="font-medium leading-4">{{ option.name }}</p>
                                 <p class="text-xs">{{ option.roles.map(role => personRole(role)).join(', ') }}</p>
                             </div>
                         </div>

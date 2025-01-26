@@ -34,8 +34,7 @@ useSeoMeta({
 const watchStatus = ref<FilmWatchStatus | undefined>(route.query.status ? (route.query.status as FilmWatchStatus) : undefined);
 const reaction    = ref<number | undefined>(route.query.reaction ? parseInt(route.query.reaction as string) : undefined);
 const format      = ref<FilmFormat | undefined>(route.query.format ? (route.query.format as FilmFormat) : undefined);
-const directors   = useMultiQuery('directors');
-const actors      = useMultiQuery('actors');
+const people      = useMultiQuery('people');
 const genres      = useMultiQuery('genres')
 const countries   = useMultiQuery('countries');
 const tags        = useMultiQuery('tags');
@@ -44,8 +43,7 @@ const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () 
     status   : watchStatus.value,
     reaction : reaction.value,
     format   : format.value,
-    directors: directors.value,
-    actors   : actors.value,
+    people   : people.value,
     genres   : genres.value,
     countries: countries.value,
     tags     : tags.value
@@ -53,8 +51,7 @@ const {name, page, perPage, sort, clearFilters} = useTabler('film_watchers', () 
     watchStatus.value = undefined;
     reaction.value    = undefined;
     format.value      = undefined;
-    directors.value   = [];
-    actors.value      = [];
+    people.value      = [];
     genres.value      = [];
     countries.value   = [];
     tags.value        = [];
@@ -66,8 +63,7 @@ const {data: filmWatchers, status, refresh} = await filmWatcherRepo.lazyList<Pag
     page          : page.value,
     per_page      : perPage.value,
     format        : format.value,
-    directors     : directors.value,
-    actors        : actors.value,
+    people        : people.value,
     genres        : genres.value,
     countries     : countries.value,
     tags          : tags.value,
@@ -148,15 +144,23 @@ async function remove(watcher: FilmWatcher) {
             </template>
 
             <template #selected>
-                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Director)"
-                                      placeholder="Фильтр по режиссёрам"
+                <UiRepoSearchSelectId :repo="new PersonRepository()"
+                                      placeholder="Фильтр по личностям"
                                       multiple
-                                      v-model="directors"/>
+                                      class="w-[250px]"
+                                      v-model="people">
+                    <template #default="{option}">
+                        <div class="flex items-center gap-2">
+                            <img :src="option.photo ? fileUrl(option.photo) : '/img/person.jpg'"
+                                 class="w-10 h-10 object-cover rounded shrink-0"/>
 
-                <UiRepoSearchSelectId :repo="new PersonRepository(PersonRole.Actor)"
-                                      placeholder="Фильтр по актёрам"
-                                      multiple
-                                      v-model="actors"/>
+                            <div class="grow">
+                                <p class="font-medium leading-4">{{ option.name }}</p>
+                                <p class="text-xs">{{ option.roles.map(role => personRole(role)).join(', ') }}</p>
+                            </div>
+                        </div>
+                    </template>
+                </UiRepoSearchSelectId>
 
                 <UiTableFilmFormatStatus placeholder="Формат фильма" v-model="format"/>
 
