@@ -19,11 +19,6 @@ useHead({
 const {state: profile, logout} = useProfile();
 
 const nav = computed(() => [{
-    label  : 'Каталог',
-    icon   : 'i-heroicons-folder-open-20-solid',
-    to     : '/catalog/films',
-    visible: profile.value
-}, {
     label  : 'Мои фильмы',
     icon   : 'i-heroicons-film-16-solid',
     to     : '/catalog/my-films',

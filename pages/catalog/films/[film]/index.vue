@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import FilmRepository from "~/repos/FilmRepository";
 import type Film from "~/resources/Film";
-import FilmPeopleEdit from "~/components/ui/FilmPeopleEdit.vue";
-import {UserRole} from "~/types/enums/UserRole";
 import {PersonRole} from "~/types/enums/PersonRole";
 import type GenreResource from "~/resources/management/GenreResource";
 import type CountryResource from "~/resources/management/CountryResource";
@@ -42,15 +40,6 @@ useSeoMeta({
     ogLocale  : 'ru_RU',
     ogSiteName: 'КиноЛюмикс'
 });
-
-const peopleEdit = ref<boolean>(false);
-
-function peopleEditSwitch() {
-    peopleEdit.value = !peopleEdit.value;
-
-    if (!peopleEdit.value)
-        refresh();
-}
 
 const feedbackRepo = new FeedbackRepository(filmId);
 const {
@@ -162,23 +151,12 @@ const {
                     <div v-if="filmData.people">
                         <div class="flex justify-between items-center">
                             <h1 class="font-bold text-2xl">Люди</h1>
-
-                            <UButton
-                                v-if="profile?.role == UserRole.Admin || (filmData.author_id && filmData.author_id == profile?.id)"
-                                color="gray"
-                                label="Редактировать"
-                                icon="i-heroicons-pencil-solid"
-                                @click="peopleEditSwitch"/>
                         </div>
 
-                        <FilmPeopleEdit v-if="peopleEdit"
-                                        class="mt-2.5"
-                                        :film-id="filmData.id"/>
-
-                        <BlockPeople v-else-if="filmData.people.length > 0"
+                        <BlockPeople v-if="filmData.people.length > 0"
                                      :people="filmData.people"/>
 
-                        <p v-if="!peopleEdit && filmData.people.length == 0">Людей здесь нет.</p>
+                        <p v-else>Людей здесь нет.</p>
                     </div>
 
                     <BlockFeedback :film-id="filmId" :items="feedback?.data ?? []" :refresh="refreshFeedback"/>
@@ -189,9 +167,4 @@ const {
 </template>
 
 <style scoped>
-.has-dot::before {
-    content: '•'; /* Символ точки */
-    margin: 0 8px; /* Отступы слева и справа от точки */
-    color: currentColor; /* Цвет текста */
-}
 </style>
