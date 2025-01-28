@@ -27,7 +27,7 @@ const director = computed<string | undefined | null>(() => filmData.value?.peopl
 const actor    = computed<string | undefined | null>(() => filmData.value?.people?.find(person => person.role == PersonRole.Actor)?.person?.name);
 
 useSeoMeta({
-    title        : filmData.value?.name + ' // ВКинопоиск',
+    title        : filmData.value?.name + ' // КиноЛюмикс',
     description  : filmData.value?.description,
     ogTitle      : filmData.value?.name,
     ogDescription: filmData.value?.description,
@@ -40,7 +40,7 @@ useSeoMeta({
     ...actor.value ? {ogActor: actor.value} : {},
     ...filmData.value?.release_date ? {ogRelease_date: new Date(filmData.value.release_date).toISOString().slice(0, 10)} : {},
     ogLocale  : 'ru_RU',
-    ogSiteName: 'ВКинопоиск'
+    ogSiteName: 'КиноЛюмикс'
 });
 
 const peopleEdit = ref<boolean>(false);

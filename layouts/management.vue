@@ -68,7 +68,7 @@ const nav = computed(() => [{
 
 <template>
     <Head>
-        <title>ВКинопоиск</title>
+        <title>КиноЛюмикс</title>
     </Head>
 
     <div>
@@ -76,7 +76,7 @@ const nav = computed(() => [{
             <template #logo>
                 <div class="flex items-center gap-2.5">
                     <UIcon name="i-heroicons-film" class="text-3xl shrink-0"/>
-                    <h1 class="grow font-roboto font-black">ВКинопоиск</h1>
+                    <h1 class="grow font-roboto font-black">КиноЛюмикс</h1>
                 </div>
             </template>
 

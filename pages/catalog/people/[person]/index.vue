@@ -20,7 +20,7 @@ const description = [
 ].filter(item => item).join('. ');
 
 useSeoMeta({
-    title        : personData.value?.name + ' // ВКинопоиск',
+    title        : personData.value?.name + ' // КиноЛюмикс',
     description  : description,
     ogTitle      : personData.value?.name,
     ogDescription: description,
@@ -30,7 +30,7 @@ useSeoMeta({
     ogUrl        : config.public.externalUrl + '/catalog/people/' + personData.value?.id,
     ogType       : 'profile',
     ogLocale     : 'ru_RU',
-    ogSiteName   : 'ВКинопоиск'
+    ogSiteName   : 'КиноЛюмикс'
 });
 
 const activeRole = ref(personData.value?.roles?.length ? personData.value.roles[0] : undefined);

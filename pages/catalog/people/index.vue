@@ -16,15 +16,15 @@ const config = useRuntimeConfig();
 const route  = useRoute();
 
 useSeoMeta({
-    title        : 'ВКинопоиск',
+    title        : 'КиноЛюмикс',
     description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
-    ogTitle      : 'ВКинопоиск',
+    ogTitle      : 'КиноЛюмикс',
     ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
     ogImage      : config.public.externalUrl + '/img/cinema.png',
     ogUrl        : config.public.externalUrl,
     ogType       : 'website',
     ogLocale     : 'ru_RU',
-    ogSiteName   : 'ВКинопоиск'
+    ogSiteName   : 'КиноЛюмикс'
 });
 
 const role      = ref<PersonRole | undefined>(route.query.role ? (route.query.role as PersonRole) : undefined);

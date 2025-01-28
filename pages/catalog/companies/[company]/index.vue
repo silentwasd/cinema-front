@@ -16,14 +16,14 @@ const {data: company} = await companyRepo.show(`company.${companyId}`, companyId
 const companyData = computed<CompanyResource | null>(() => company.value?.data || null);
 
 useSeoMeta({
-    title        : companyData.value?.name + ' // ВКинопоиск',
+    title        : companyData.value?.name + ' // КиноЛюмикс',
     description  : companyData.value?.description ?? '',
     ogTitle      : companyData.value?.name,
     ogDescription: companyData.value?.description ?? '',
     ogUrl        : config.public.externalUrl + '/catalog/companies/' + companyData.value?.id,
     ogType       : 'website',
     ogLocale     : 'ru_RU',
-    ogSiteName   : 'ВКинопоиск'
+    ogSiteName   : 'КиноЛюмикс'
 });
 </script>
 

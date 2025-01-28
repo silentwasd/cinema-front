@@ -9,15 +9,15 @@ definePageMeta({
 const config = useRuntimeConfig();
 
 useSeoMeta({
-    title        : 'Войти в ВКинопоиск',
+    title        : 'Войти в КиноЛюмикс',
     description  : 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
-    ogTitle      : 'Войти ВКинопоиск',
+    ogTitle      : 'Войти КиноЛюмикс',
     ogDescription: 'Сохрани каждый момент. Отслеживай просмотр и ставь собственные оценки.',
     ogImage      : config.public.externalUrl + '/img/cinema.png',
     ogUrl        : config.public.externalUrl,
     ogType       : 'website',
     ogLocale     : 'ru_RU',
-    ogSiteName   : 'ВКинопоиск'
+    ogSiteName   : 'КиноЛюмикс'
 });
 
 const state = ref({

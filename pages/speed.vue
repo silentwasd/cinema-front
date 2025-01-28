@@ -8,15 +8,15 @@ definePageMeta({
 const config = useRuntimeConfig();
 
 useSeoMeta({
-    title        : 'Замерить скорость ВКинопоиске',
+    title        : 'Замерить скорость КиноЛюмиксе',
     description  : 'Проверь, как быстро грузятся фрагменты видео нашего сервера.',
-    ogTitle      : 'Замерить скорость ВКинопоиске',
+    ogTitle      : 'Замерить скорость КиноЛюмиксе',
     ogDescription: 'Проверь, как быстро грузятся фрагменты видео нашего сервера.',
     ogImage      : config.public.externalUrl + '/img/cinema.png',
     ogUrl        : config.public.externalUrl,
     ogType       : 'website',
     ogLocale     : 'ru_RU',
-    ogSiteName   : 'ВКинопоиск'
+    ogSiteName   : 'КиноЛюмикс'
 });
 
 const speedRepo          = new SpeedRepository();
