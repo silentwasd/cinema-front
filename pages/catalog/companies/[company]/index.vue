@@ -3,7 +3,7 @@ import type CompanyResource from "~/resources/management/CompanyResource";
 import CompanyRepository from "~/repos/management/CompanyRepository";
 
 definePageMeta({
-    layout: 'management'
+    layout: 'default'
 });
 
 const route       = useRoute();

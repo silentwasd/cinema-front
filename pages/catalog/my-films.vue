@@ -13,7 +13,7 @@ import TagRepository from "~/repos/management/TagRepository";
 
 definePageMeta({
     middleware: 'auth',
-    layout    : 'management'
+    layout    : 'default'
 });
 
 const route  = useRoute();

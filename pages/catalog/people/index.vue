@@ -9,7 +9,7 @@ import {PersonSex} from "~/types/enums/PersonSex";
 
 definePageMeta({
     middleware: 'auth',
-    layout    : 'management'
+    layout    : 'default'
 });
 
 const config = useRuntimeConfig();

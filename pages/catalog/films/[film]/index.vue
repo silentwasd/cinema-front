@@ -11,7 +11,7 @@ import type TagResource from "~/resources/management/TagResource";
 import type CompanyResource from "~/resources/management/CompanyResource";
 
 definePageMeta({
-    layout: 'management'
+    layout: 'default'
 });
 
 const route            = useRoute();

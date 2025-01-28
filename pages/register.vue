@@ -2,7 +2,7 @@
 import ApiClient from "~/services/ApiClient";
 
 definePageMeta({
-    layout    : 'management',
+    layout    : 'default',
     middleware: 'auth'
 });
 

@@ -7,7 +7,7 @@ import type CompanyResource from "~/resources/management/CompanyResource";
 
 definePageMeta({
     middleware: 'auth',
-    layout    : 'management'
+    layout    : 'default'
 });
 
 const config = useRuntimeConfig();

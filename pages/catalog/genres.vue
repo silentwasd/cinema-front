@@ -5,7 +5,7 @@ import type PaginatedCollection from "~/types/PaginatedCollection";
 
 definePageMeta({
     middleware: 'auth',
-    layout    : 'management'
+    layout    : 'default'
 });
 
 const config = useRuntimeConfig();

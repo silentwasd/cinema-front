@@ -3,7 +3,7 @@ import PersonRepository from "~/repos/PersonRepository";
 import type PersonResource from "~/resources/PersonResource";
 
 definePageMeta({
-    layout: 'management'
+    layout: 'default'
 });
 
 const route      = useRoute();

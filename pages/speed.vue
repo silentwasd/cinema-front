@@ -2,7 +2,7 @@
 import SpeedRepository from "~/repos/SpeedRepository";
 
 definePageMeta({
-    layout: 'management'
+    layout: 'default'
 });
 
 const config = useRuntimeConfig();

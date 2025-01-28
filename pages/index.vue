@@ -3,7 +3,7 @@ import FilmRepository from "~/repos/public/FilmRepository";
 import {FilmCinemaStatus} from "~/types/enums/FilmCinemaStatus";
 
 definePageMeta({
-    layout: 'management'
+    layout: 'default'
 });
 
 const config = useRuntimeConfig();

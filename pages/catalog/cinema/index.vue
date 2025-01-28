@@ -16,7 +16,7 @@ import {FilmCinemaStatus} from "~/types/enums/FilmCinemaStatus";
 
 definePageMeta({
     middleware: 'auth',
-    layout    : 'management'
+    layout    : 'default'
 });
 
 const addUrl         = ref<boolean>(false);
