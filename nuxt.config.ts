@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
     devServer: {
         host : '0.0.0.0',
-        port : 3000,
+        port : 3001,
         https: {
             key : process.env.NUXT_SSL_KEY_FILE,
             cert: process.env.NUXT_SSL_CERT_FILE

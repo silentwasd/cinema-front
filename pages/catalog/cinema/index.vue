@@ -274,7 +274,7 @@ async function removeAudioVariant(audio: FilmAudioVariantResource) {
                             <UProgress :value="download.progress"/>
                             <p class="text-sm">{{ download.status }} ({{ download.progress }}%)</p>
 
-                            <div v-if="download.progress == 100">
+                            <div>
                                 <UDivider class="pb-2 [&>div]:dark:border-gray-700"/>
 
                                 <div class="flex gap-2">
@@ -290,19 +290,21 @@ async function removeAudioVariant(audio: FilmAudioVariantResource) {
                                              size="xs"
                                              @click="start(download)"/>
 
-                                    <UButton v-if="!download.has_film"
-                                             icon="i-heroicons-link-20-solid"
-                                             color="gray"
-                                             label="Привязать к фильму"
-                                             size="xs"
-                                             @click="attachDownload = download"/>
+                                    <template v-if="download.progress == 100">
+                                        <UButton v-if="!download.has_film"
+                                                 icon="i-heroicons-link-20-solid"
+                                                 color="gray"
+                                                 label="Привязать к фильму"
+                                                 size="xs"
+                                                 @click="attachDownload = download"/>
 
-                                    <UButton v-if="!download.has_film"
-                                             icon="i-heroicons-trash-20-solid"
-                                             color="gray"
-                                             label="Удалить"
-                                             size="xs"
-                                             @click="remove(download)"/>
+                                        <UButton v-if="!download.has_film"
+                                                 icon="i-heroicons-trash-20-solid"
+                                                 color="gray"
+                                                 label="Удалить"
+                                                 size="xs"
+                                                 @click="remove(download)"/>
+                                    </template>
                                 </div>
                             </div>
                         </template>
